@@ -283,66 +283,99 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .btn-warn:hover{box-shadow:0 6px 20px rgba(245,158,11,.55)}
 .btn-lg{padding:16px 32px;font-size:.9rem;border-radius:12px}
 
-/* CARD DE CONCLUSÃO — agora compacto, no topo */
-.final-card{
-  background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.05));
-  border:1.5px solid rgba(16,185,129,.35);border-radius:var(--radius-md);
-  padding:24px 22px;text-align:center;box-shadow:0 10px 30px rgba(16,185,129,.12);
+/* ============ TELA FINAL — COMPACTA ============ */
+.final-topo{
+  background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(5,150,105,.03));
+  border:1.5px solid rgba(16,185,129,.3);
+  border-radius:var(--radius-md);
+  padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:0 6px 18px rgba(16,185,129,.08);
 }
-.final-icon{
-  width:64px;height:64px;border-radius:50%;margin:0 auto 14px;
+.final-topo .ic{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(135deg,#10b981,#059669);color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:1.8rem;
-  box-shadow:0 10px 25px rgba(16,185,129,.4);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  box-shadow:0 4px 12px rgba(16,185,129,.35);
 }
-.final-card h3{margin:0 0 6px;color:#065f46;font-size:1.1rem;font-weight:800}
-.final-card p{margin:0;color:#047857;font-size:.82rem;line-height:1.55}
+.final-topo .txt h3{margin:0 0 2px;color:#065f46;font-size:.9rem;font-weight:800;line-height:1.2}
+.final-topo .txt p{margin:0;color:#047857;font-size:.74rem;font-weight:500}
 
-/* BLOCO DE AÇÕES — grande, destacado, logo abaixo do card */
 .acoes-principais{
-  display:flex;flex-direction:column;gap:10px;
-  margin-top:16px;
+  display:flex;flex-direction:column;gap:9px;
+  margin-top:12px;
 }
 .acoes-principais .btn{
-  width:100%;padding:16px 22px;font-size:.92rem;border-radius:12px;
+  width:100%;padding:15px 20px;font-size:.9rem;border-radius:12px;
   font-weight:800;
 }
 
-/* BLOCO CONHEÇA ALGUÉM */
+/* TÍTULO DESTACADO — CTA de curiosidade */
+.titulo-resumo-cta{
+  margin-top:18px;
+  padding:18px 18px 16px;
+  background:linear-gradient(135deg,rgba(30,58,138,.06),rgba(59,130,246,.04));
+  border:1.5px solid rgba(59,130,246,.3);
+  border-radius:var(--radius-md);
+  text-align:center;
+}
+.titulo-resumo-cta h3{
+  margin:0 0 6px;
+  font-size:1.05rem;font-weight:800;
+  color:var(--navy);
+  letter-spacing:-.01em;
+  line-height:1.25;
+  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+}
+.titulo-resumo-cta h3 i{color:var(--primary)}
+.titulo-resumo-cta p{
+  margin:0;
+  font-size:.76rem;color:#334155;font-weight:500;line-height:1.5;
+}
+.titulo-resumo-cta .seta{
+  display:inline-block;margin-top:8px;
+  color:var(--primary);font-size:.9rem;
+  animation:bounceDown 1.6s ease-in-out infinite;
+}
+@keyframes bounceDown{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(6px)}
+}
+
 .indicacao-box{
   background:linear-gradient(135deg,rgba(37,211,102,.08),rgba(18,140,126,.04));
   border:1.5px solid rgba(37,211,102,.35);
   border-radius:var(--radius-sm);
-  padding:20px;margin-top:16px;text-align:left;
+  padding:18px;margin-top:14px;text-align:left;
 }
-.indicacao-box h5{margin:0 0 4px;font-size:.85rem;font-weight:800;color:#065f46;display:flex;align-items:center;gap:8px;line-height:1.3}
+.indicacao-box h5{margin:0 0 4px;font-size:.82rem;font-weight:800;color:#065f46;display:flex;align-items:center;gap:8px;line-height:1.3}
 .indicacao-box h5 i{color:#25d366;flex-shrink:0}
-.indicacao-box .sub{margin:0 0 14px;font-size:.74rem;color:#047857;font-weight:500}
+.indicacao-box .sub{margin:0 0 12px;font-size:.72rem;color:#047857;font-weight:500}
 .indicacao-box .opts-ind{display:flex;gap:8px;flex-wrap:wrap}
 .indicacao-box .opt-ind{
-  flex:1;min-width:120px;padding:13px 16px;border-radius:var(--radius-sm);
+  flex:1;min-width:120px;padding:12px 16px;border-radius:var(--radius-sm);
   border:1.5px solid rgba(37,211,102,.35);background:rgba(255,255,255,.9);
-  cursor:pointer;text-align:center;font-weight:700;font-size:.82rem;color:#065f46;
+  cursor:pointer;text-align:center;font-weight:700;font-size:.8rem;color:#065f46;
   transition:all .22s;user-select:none;
 }
 .indicacao-box .opt-ind:hover{border-color:#25d366;transform:translateY(-1px)}
 .indicacao-box .opt-ind.ativo{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border-color:#128c7e;box-shadow:0 4px 12px rgba(37,211,102,.35)}
 
 .indicacao-cta{
-  display:none;margin-top:16px;padding-top:16px;
+  display:none;margin-top:14px;padding-top:14px;
   border-top:1px dashed rgba(37,211,102,.3);
 }
 .indicacao-cta.ativo{display:block;animation:fadeUp .3s ease}
 .indicacao-cta .msg{
   background:rgba(255,255,255,.95);border:1px solid rgba(37,211,102,.3);
-  border-radius:var(--radius-sm);padding:14px 16px;
-  font-size:.76rem;color:#334155;line-height:1.6;margin-bottom:14px;
+  border-radius:var(--radius-sm);padding:12px 14px;
+  font-size:.74rem;color:#334155;line-height:1.55;margin-bottom:12px;
 }
 .indicacao-cta .msg strong{color:#065f46}
 .indicacao-cta .btn-compartilhar{
-  width:100%;padding:15px 20px;border-radius:12px;border:none;cursor:pointer;
+  width:100%;padding:14px 20px;border-radius:12px;border:none;cursor:pointer;
   background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;
-  font-weight:800;font-size:.88rem;font-family:inherit;
+  font-weight:800;font-size:.86rem;font-family:inherit;
   display:flex;align-items:center;justify-content:center;gap:10px;
   box-shadow:0 6px 18px rgba(37,211,102,.4);
   transition:all .25s;
@@ -353,11 +386,11 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 /* RESUMO (narrativa) — fica no fim, quem quiser rola */
 .resumo-box{
   background:rgba(255,255,255,.92);border:1px solid rgba(59,130,246,.2);
-  border-radius:var(--radius-sm);padding:22px;margin-top:16px;text-align:left;
+  border-radius:var(--radius-sm);padding:20px;margin-top:14px;text-align:left;
 }
-.resumo-box > h4{margin:0 0 6px;font-size:.9rem;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
+.resumo-box > h4{margin:0 0 6px;font-size:.88rem;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
 .resumo-box > h4 i{color:var(--primary)}
-.resumo-box .resumo-sub{margin:0 0 18px;font-size:.72rem;color:var(--text-muted);font-weight:500}
+.resumo-box .resumo-sub{margin:0 0 16px;font-size:.72rem;color:var(--text-muted);font-weight:500}
 .bloco-resumo{
   display:flex;gap:14px;padding:16px 0;
   border-bottom:1px dashed rgba(59,130,246,.15);
@@ -444,10 +477,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   .nav-info{width:100%;text-align:center;margin-bottom:4px;order:-1}
   .nav-actions{width:100%;justify-content:space-between}
   .btn-icon{width:38px;height:38px;font-size:.85rem}
-  .btn-lg{padding:14px 22px;font-size:.82rem}
-  .final-card{padding:20px 18px}
-  .final-icon{width:56px;height:56px;font-size:1.5rem;margin-bottom:12px}
-  .acoes-principais .btn{padding:15px 18px;font-size:.86rem}
+  .final-topo{padding:12px 14px}
+  .final-topo .ic{width:34px;height:34px;font-size:.9rem}
+  .final-topo .txt h3{font-size:.85rem}
+  .final-topo .txt p{font-size:.7rem}
+  .acoes-principais .btn{padding:14px 18px;font-size:.86rem}
+  .titulo-resumo-cta{padding:16px 14px 14px;margin-top:14px}
+  .titulo-resumo-cta h3{font-size:.98rem}
+  .titulo-resumo-cta p{font-size:.72rem}
 }
 </style>
 </head>
@@ -871,17 +908,19 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
   </form>
 
-  <!-- TELA FINAL — NOVA ORDEM: ação primeiro, conteúdo depois -->
+  <!-- TELA FINAL — COMPACTA, TUDO VISÍVEL SEM ROLAR -->
   <div class="section" data-sec="final" id="sec-final">
 
-    <!-- 1. CARD DE CONCLUSÃO -->
-    <div class="final-card">
-      <div class="final-icon"><i class="fas fa-check-circle"></i></div>
-      <h3>Pesquisa completa!</h3>
-      <p>Tudo pronto. Só falta enviar.</p>
+    <!-- 1. TOPO COMPACTO -->
+    <div class="final-topo">
+      <div class="ic"><i class="fas fa-check"></i></div>
+      <div class="txt">
+        <h3>Pesquisa concluída</h3>
+        <p>Tudo pronto. Só falta confirmar o envio.</p>
+      </div>
     </div>
 
-    <!-- 2. BOTÕES DE AÇÃO — GRANDES, VISÍVEIS SEM ROLAR -->
+    <!-- 2. BOTÕES DE AÇÃO — VISÍVEIS SEM ROLAR -->
     <div class="acoes-principais">
       <button type="button" class="btn btn-success" id="btn-enviar" onclick="enviarResposta()">
         <i class="fas fa-paper-plane"></i> Enviar resposta
@@ -891,7 +930,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </button>
     </div>
 
-    <!-- 3. CONHEÇA ALGUÉM -->
+    <!-- 3. TÍTULO DESTACADO — CTA DE CURIOSIDADE -->
+    <div class="titulo-resumo-cta">
+      <h3><i class="fas fa-magnifying-glass-chart"></i> Como a gente leu o seu negócio</h3>
+      <p>Antes de enviar, veja como a sua empresa foi interpretada pelas suas respostas.</p>
+      <span class="seta"><i class="fas fa-chevron-down"></i></span>
+    </div>
+
+    <!-- 4. CONHEÇA ALGUÉM -->
     <div class="indicacao-box">
       <h5><i class="fas fa-user-plus"></i> Você conhece alguém que também poderia nos ajudar com essa pesquisa?</h5>
       <p class="sub">Se sim, a gente já deixa tudo pronto pra você compartilhar.</p>
@@ -910,10 +956,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
-    <!-- 4. NARRATIVA — só quem tem curiosidade rola -->
+    <!-- 5. NARRATIVA — só quem tem curiosidade rola -->
     <div class="resumo-box" id="resumo-final">
-      <h4><i class="fas fa-clipboard-check"></i> Como a gente leu o seu negócio</h4>
-      <p class="resumo-sub">Rola pra baixo se quiser ver o resumo das suas respostas.</p>
+      <h4><i class="fas fa-clipboard-check"></i> Resumo das suas respostas</h4>
+      <p class="resumo-sub">Leitura completa do seu negócio, gerada a partir do que você respondeu.</p>
       <div id="resumo-content"></div>
     </div>
   </div>
@@ -929,10 +975,12 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
   <!-- ENVIADO -->
   <div class="section" data-sec="enviado" id="sec-enviado">
-    <div class="final-card">
-      <div class="final-icon"><i class="fas fa-check"></i></div>
-      <h3>Respostas registradas!</h3>
-      <p>Obrigado por participar. Suas respostas já estão com a Elite Studio Codex. Você pode fechar esta página.</p>
+    <div class="final-topo" style="flex-direction:column;text-align:center;padding:26px 20px">
+      <div class="ic" style="width:56px;height:56px;font-size:1.5rem;margin-bottom:6px"><i class="fas fa-check"></i></div>
+      <div class="txt">
+        <h3 style="font-size:1.05rem;margin-bottom:4px">Respostas registradas!</h3>
+        <p style="font-size:.78rem">Obrigado por participar. Suas respostas já estão com a Elite Studio Codex.</p>
+      </div>
     </div>
   </div>
 
@@ -1180,7 +1228,7 @@ function coletarDados(){
 
 function gerarNarrativa(d){
   const blocos = [];
-  const nome = d.q1 ? `<strong>${escapeHtml(d.q1)}</strong>` : 'Seu negócio';
+  const nome = d.q1 ? `<strong>${escapeHtml(d.q1)}</strong>` : 'Sua empresa';
   const tipos = d.q2 || 'estabelecimento';
   const tempo = d.q3 ? `há ${d.q3.toLowerCase()}` : '';
 

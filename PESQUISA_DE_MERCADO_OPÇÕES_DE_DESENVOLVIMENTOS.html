@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa — Sistema de Pedidos para Empreendimentos | Elite Studio Codex</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --primary:#3b82f6;--primary-hover:#2563eb;
+  --navy:#1e3a8a;--navy-dark:#0f172a;
+  --teal:#0f766e;
+  --bg-panel:rgba(255,255,255,.82);
+  --text-main:#1e3a8a;--text-muted:#64748b;
+  --border-glass:rgba(255,255,255,.8);
+  --radius-md:12px;--radius-sm:8px;
+  --glass-blur:blur(16px);
+  --shadow-glass:0 10px 25px -5px rgba(30,58,138,.15),0 0 20px rgba(59,130,246,.1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:
+    radial-gradient(circle at 10% 20%,rgba(59,130,246,.15),transparent 40%),
+    radial-gradient(circle at 90% 80%,rgba(6,182,212,.15),transparent 40%),
+    linear-gradient(135deg,#f8fafc,#e0f2fe,#ecfeff);
+  background-attachment:fixed;
+  color:var(--text-main);font-size:14px;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.neon-glow{position:fixed;border-radius:50%;filter:blur(120px);opacity:.55;z-index:0;pointer-events:none;animation:floatLight 12s infinite alternate ease-in-out}
+.neon-1{background:rgba(59,130,246,.45);width:520px;height:520px;top:-180px;left:-180px}
+.neon-2{background:rgba(6,182,212,.35);width:520px;height:520px;bottom:-180px;right:-180px;animation-delay:5s}
+@keyframes floatLight{0%{transform:translate(0,0) scale(1)}100%{transform:translate(40px,-40px) scale(1.15)}}
+
+.watermark{
+  position:fixed;inset:0;z-index:1;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  opacity:.05;
+  animation:watermarkPulse 14s ease-in-out infinite;
+}
+.watermark img{
+  width:min(75vw,720px);height:auto;
+  filter:grayscale(1) brightness(.4) contrast(1.4);
+  user-select:none;
+}
+@keyframes watermarkPulse{0%,100%{opacity:.045;transform:scale(1)}50%{opacity:.07;transform:scale(1.03)}}
+
+.wrap{position:relative;z-index:10;max-width:920px;margin:0 auto;padding:24px 18px 130px}
+
+.top-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  background:var(--bg-panel);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--border-glass);border-radius:var(--radius-md);
+  padding:14px 20px;box-shadow:var(--shadow-glass);margin-bottom:16px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo-img{
+  width:52px;height:52px;border-radius:12px;flex-shrink:0;
+  object-fit:contain;background:#fff;padding:4px;
+  box-shadow:0 6px 18px rgba(30,58,138,.35);
+}
+.brand-txt h1{margin:0;font-size:1rem;font-weight:800;color:var(--text-main);line-height:1.15}
+.brand-txt span{font-size:.68rem;color:var(--text-muted);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.badge-prod{
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));color:#fff;
+  padding:5px 12px;border-radius:14px;font-weight:700;font-size:.68rem;
+  display:inline-flex;align-items:center;gap:6px;letter-spacing:.03em;
+}
+.badge-prod i{color:#93c5fd}
+
+.progress-card{
+  background:var(--bg-panel);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--border-glass);border-radius:var(--radius-md);
+  padding:14px 20px;box-shadow:var(--shadow-glass);margin-bottom:18px;
+}
+.progress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:12px;flex-wrap:wrap}
+.progress-head .lbl{font-size:.72rem;font-weight:800;color:var(--text-main);letter-spacing:.04em;text-transform:uppercase}
+.progress-head .pct{font-size:.72rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums}
+.progress-track{height:10px;background:rgba(30,58,138,.08);border-radius:6px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#3b82f6,#60a5fa,#93c5fd);box-shadow:0 0 12px rgba(96,165,250,.7);transition:width .45s cubic-bezier(.4,0,.2,1)}
+.step-dots{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.step-dot{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-size:.62rem;font-weight:700;background:rgba(148,163,184,.15);color:#64748b;border:1px solid rgba(148,163,184,.25);transition:all .25s}
+.step-dot.ativo{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border-color:#2563eb;box-shadow:0 0 10px rgba(59,130,246,.5)}
+.step-dot.ok{background:linear-gradient(135deg,#1e40af,#1e3a8a);color:#fff;border-color:#1e3a8a}
+.step-dot i{font-size:.62rem}
+
+.hero{
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(20px) saturate(1.1);
+  border:1px solid rgba(59,130,246,.25);
+  border-radius:var(--radius-md);
+  padding:20px 22px;margin-bottom:18px;
+  box-shadow:0 12px 30px -8px rgba(30,58,138,.22),0 0 22px rgba(59,130,246,.12);
+  position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--navy),var(--primary),#06b6d4)}
+.hero h2{margin:0 0 8px;font-size:1.1rem;font-weight:800;color:#0f172a;letter-spacing:-.01em}
+.hero p{margin:0;font-size:.82rem;color:#334155;line-height:1.6;font-weight:500}
+.hero p strong{color:var(--navy);font-weight:800}
+.hero .info-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.info-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 13px;border-radius:14px;font-size:.7rem;font-weight:700;
+  background:#fff;
+  border:1.5px solid rgba(59,130,246,.3);
+  color:var(--navy);
+  box-shadow:0 2px 6px rgba(30,58,138,.06);
+}
+.info-chip i{color:var(--primary)}
+
+.section{
+  background:var(--bg-panel);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--border-glass);border-radius:var(--radius-md);
+  padding:22px;box-shadow:var(--shadow-glass);margin-bottom:18px;
+  display:none;animation:fadeUp .35s ease;
+}
+.section.ativo{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px dashed rgba(59,130,246,.2)}
+.section-head .num{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--navy),var(--navy-dark));color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;box-shadow:0 4px 12px rgba(30,58,138,.3)}
+.section-head .txt h3{margin:0;font-size:.95rem;font-weight:800;color:var(--text-main);line-height:1.2}
+.section-head .txt p{margin:2px 0 0;font-size:.72rem;color:var(--text-muted);font-weight:500}
+
+.q{margin-bottom:22px}
+.q:last-child{margin-bottom:0}
+.q-label{display:block;font-size:.82rem;font-weight:700;color:var(--text-main);margin-bottom:10px;line-height:1.4}
+.q-label .req{color:#dc2626;margin-left:3px}
+.q-label .opt-tag{font-size:.62rem;color:#64748b;background:rgba(148,163,184,.15);padding:2px 8px;border-radius:8px;margin-left:6px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+.q-label .multi-tag{font-size:.62rem;color:#1e40af;background:rgba(219,234,254,.7);padding:2px 8px;border-radius:8px;margin-left:6px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border:1px solid rgba(59,130,246,.3)}
+.q-hint{font-size:.68rem;color:var(--text-muted);font-weight:500;display:block;margin-top:3px}
+
+input[type=text],input[type=tel],input[type=number],textarea{
+  width:100%;padding:11px 14px;border:1px solid rgba(59,130,246,.25);
+  border-radius:var(--radius-sm);font-size:.82rem;color:var(--text-main);
+  background:rgba(255,255,255,.9);font-family:inherit;outline:none;transition:all .2s;
+}
+input:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(59,130,246,.15);background:#fff}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{
+  padding:6px 12px;border-radius:14px;border:1px solid rgba(59,130,246,.3);
+  background:rgba(255,255,255,.75);color:#1e40af;font-size:.7rem;font-weight:600;
+  cursor:pointer;transition:all .2s;user-select:none;display:inline-flex;align-items:center;gap:5px;
+}
+.chip:hover{background:rgba(219,234,254,.85);transform:translateY(-1px);border-color:rgba(59,130,246,.5)}
+.chip.ativo{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border-color:#2563eb;box-shadow:0 2px 8px rgba(59,130,246,.35)}
+.chip.ativo::before{content:'✓';font-weight:900;font-size:.65rem}
+
+.opts{display:grid;gap:8px}
+.opts.cols-2{grid-template-columns:1fr 1fr}
+.opts.cols-3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.opts.cols-2,.opts.cols-3{grid-template-columns:1fr}}
+.opt{
+  position:relative;display:flex;align-items:center;gap:10px;
+  padding:11px 14px;border-radius:var(--radius-sm);
+  border:1.5px solid rgba(59,130,246,.2);background:rgba(255,255,255,.75);
+  cursor:pointer;transition:all .22s;font-size:.8rem;font-weight:600;color:var(--text-main);
+  user-select:none;
+}
+.opt:hover{border-color:rgba(59,130,246,.5);background:rgba(219,234,254,.6);transform:translateY(-1px)}
+.opt input{display:none}
+.opt .mark{
+  width:18px;height:18px;border-radius:5px;flex-shrink:0;
+  border:2px solid rgba(59,130,246,.4);background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;position:relative;
+}
+.opt.radio .mark{border-radius:50%}
+.opt input:checked ~ .mark{background:linear-gradient(135deg,var(--navy),var(--navy-dark));border-color:var(--navy)}
+.opt input:checked ~ .mark::after{content:'✓';color:#fff;font-size:.65rem;font-weight:900;line-height:1}
+.opt.radio input:checked ~ .mark::after{content:'';width:7px;height:7px;background:#fff;border-radius:50%}
+.opt input:checked ~ .txt{color:var(--navy);font-weight:800}
+.opt:has(input:checked){border-color:var(--navy);background:linear-gradient(135deg,rgba(219,234,254,.95),rgba(191,219,254,.7));box-shadow:0 0 0 2px rgba(30,58,138,.08),0 4px 12px rgba(30,58,138,.12)}
+
+.scale{display:flex;gap:8px;flex-wrap:wrap}
+.scale .scale-item{
+  flex:1;min-width:70px;padding:14px 10px;border-radius:var(--radius-sm);
+  border:1.5px solid rgba(59,130,246,.2);background:rgba(255,255,255,.75);
+  cursor:pointer;text-align:center;transition:all .22s;
+}
+.scale .scale-item:hover{border-color:rgba(59,130,246,.5);transform:translateY(-2px)}
+.scale .scale-item .n{font-size:1.1rem;font-weight:800;color:var(--navy);display:block;line-height:1}
+.scale .scale-item .lbl{font-size:.6rem;color:var(--text-muted);font-weight:600;display:block;margin-top:4px;letter-spacing:.03em;text-transform:uppercase}
+.scale input{display:none}
+.scale-item:has(input:checked){
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));border-color:var(--navy);
+  box-shadow:0 0 0 2px rgba(30,58,138,.2),0 6px 18px rgba(30,58,138,.3);transform:translateY(-2px);
+}
+.scale-item:has(input:checked) .n{color:#fff}
+.scale-item:has(input:checked) .lbl{color:#93c5fd}
+
+.nav-bar{
+  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  background:rgba(255,255,255,.95);backdrop-filter:blur(20px) saturate(1.2);
+  border-top:1px solid rgba(59,130,246,.2);
+  box-shadow:0 -10px 30px rgba(30,58,138,.12);
+  padding:12px 18px;
+  transition:transform .3s ease, opacity .3s ease;
+}
+.nav-bar.escondida{transform:translateY(120%);opacity:0;pointer-events:none}
+.nav-inner{max-width:920px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.nav-info{font-size:.7rem;color:var(--text-muted);font-weight:600}
+.nav-info strong{color:var(--text-main);font-weight:800}
+.nav-actions{display:flex;gap:8px;align-items:center}
+
+.btn-icon{
+  width:42px;height:42px;border-radius:50%;
+  border:1.5px solid rgba(59,130,246,.35);
+  background:rgba(255,255,255,.9);
+  color:var(--navy);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.95rem;cursor:pointer;transition:all .25s;
+  position:relative;
+}
+.btn-icon:hover:not(:disabled){
+  transform:translateY(-2px);
+  border-color:var(--primary);
+  box-shadow:0 6px 16px rgba(59,130,246,.3);
+}
+.btn-icon.olho:hover:not(:disabled){background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border-color:transparent}
+.btn-icon:disabled{
+  opacity:.4;cursor:not-allowed;
+  background:rgba(148,163,184,.15);
+  border-color:rgba(148,163,184,.3);
+  color:#94a3b8;
+}
+.btn-icon.ativo-pulse{
+  animation:pulseIcon 2.2s ease-in-out infinite;
+}
+@keyframes pulseIcon{
+  0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.5)}
+  50%{box-shadow:0 0 0 8px rgba(59,130,246,0)}
+}
+.btn-icon .tooltip{
+  position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--navy-dark);color:#fff;
+  padding:5px 10px;border-radius:6px;
+  font-size:.65rem;font-weight:700;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .2s;
+  box-shadow:0 6px 16px rgba(15,23,42,.3);
+}
+.btn-icon:hover:not(:disabled) .tooltip{opacity:1}
+
+.btn{
+  padding:10px 20px;border-radius:var(--radius-sm);border:none;cursor:pointer;
+  font-weight:700;font-size:.78rem;transition:all .25s;
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  font-family:inherit;white-space:nowrap;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+.btn-outline{background:rgba(255,255,255,.8);border:1.5px solid rgba(59,130,246,.3);color:var(--navy)}
+.btn-outline:hover{background:rgba(255,255,255,.95);border-color:var(--primary)}
+.btn-primary{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;box-shadow:0 4px 14px rgba(59,130,246,.4)}
+.btn-primary:hover{box-shadow:0 6px 20px rgba(59,130,246,.55)}
+.btn-navy{background:linear-gradient(135deg,var(--navy),var(--navy-dark));color:#fff;box-shadow:0 4px 14px rgba(30,58,138,.4)}
+.btn-navy:hover{box-shadow:0 6px 20px rgba(30,58,138,.6)}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.4)}
+.btn-success:hover{box-shadow:0 6px 20px rgba(16,185,129,.55)}
+.btn-lg{padding:16px 32px;font-size:.9rem;border-radius:12px}
+
+.final-card{
+  background:linear-gradient(135deg,rgba(16,185,129,.1),rgba(5,150,105,.05));
+  border:1.5px solid rgba(16,185,129,.35);border-radius:var(--radius-md);
+  padding:30px 26px;text-align:center;box-shadow:0 10px 30px rgba(16,185,129,.12);
+}
+.final-icon{
+  width:80px;height:80px;border-radius:50%;margin:0 auto 18px;
+  background:linear-gradient(135deg,#10b981,#059669);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:2.2rem;
+  box-shadow:0 10px 25px rgba(16,185,129,.4);
+}
+.final-card h3{margin:0 0 8px;color:#065f46;font-size:1.15rem;font-weight:800}
+.final-card p{margin:0 0 24px;color:#047857;font-size:.85rem;line-height:1.6}
+
+.resumo-box{
+  background:rgba(255,255,255,.92);border:1px solid rgba(59,130,246,.2);
+  border-radius:var(--radius-sm);padding:18px;margin-top:16px;text-align:left;
+}
+.resumo-box h4{margin:0 0 12px;font-size:.78rem;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
+.resumo-box h4 i{color:var(--primary)}
+.resumo-linha{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:.74rem;border-bottom:1px dashed rgba(59,130,246,.12)}
+.resumo-linha:last-child{border-bottom:none}
+.resumo-linha .q{color:var(--text-muted);font-weight:600;flex:1;margin:0}
+.resumo-linha .a{color:var(--navy);font-weight:700;text-align:right;max-width:55%}
+
+.enviando-box{
+  display:none;flex-direction:column;align-items:center;gap:16px;
+  padding:40px 26px;text-align:center;
+}
+.enviando-box.ativo{display:flex}
+.spinner{
+  width:64px;height:64px;
+  border:4px solid rgba(59,130,246,.2);
+  border-top-color:#3b82f6;
+  border-right-color:#60a5fa;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.enviando-box h3{margin:0;color:var(--navy);font-size:1.05rem;font-weight:800}
+.enviando-box p{margin:0;color:var(--text-muted);font-size:.82rem}
+
+.toast{
+  position:fixed;bottom:130px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:linear-gradient(135deg,#10b981,#059669);color:#fff;
+  padding:12px 24px;border-radius:20px;font-weight:700;font-size:.78rem;
+  box-shadow:0 10px 30px rgba(16,185,129,.5);z-index:999;opacity:0;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;
+  display:flex;align-items:center;gap:8px;
+}
+.toast.ativo{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast i{font-size:.9rem}
+
+@media(max-width:600px){
+  .wrap{padding:14px 12px 140px}
+  .top-bar{padding:12px 14px}
+  .brand-txt h1{font-size:.9rem}
+  .section{padding:18px 16px}
+  .hero{padding:16px 18px}
+  .nav-bar{padding:10px 14px}
+  .nav-info{width:100%;text-align:center;margin-bottom:4px;order:-1}
+  .nav-actions{width:100%;justify-content:space-between}
+  .btn-icon{width:38px;height:38px;font-size:.85rem}
+  .btn-lg{padding:14px 22px;font-size:.82rem}
+}
+</style>
+</head>
+<body>
+
+<div class="watermark"><img src="https://i.imgur.com/d60nEpv.png" alt=""></div>
+
+<div class="neon-glow neon-1"></div>
+<div class="neon-glow neon-2"></div>
+
+<div class="wrap">
+
+  <div class="top-bar">
+    <div class="brand">
+      <img src="https://i.imgur.com/d60nEpv.png" alt="Elite Studio Codex" class="brand-logo-img">
+      <div class="brand-txt">
+        <h1>Elite Studio Codex</h1>
+        <span>Pesquisa de Mercado · 2026</span>
+      </div>
+    </div>
+    <span class="badge-prod"><i class="fas fa-chart-line"></i> Melhor diagnóstico de empreendimentos</span>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-head">
+      <span class="lbl" id="progress-lbl">Seção 1 de 7 · Identificação</span>
+      <span class="pct" id="progress-pct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="step-dots" id="step-dots"></div>
+  </div>
+
+  <div class="hero">
+    <h2>Sua opinião constrói o produto</h2>
+    <p>Estamos desenvolvendo um sistema de pedidos para o seu negócio — com loja online própria, cardápio editável e painel administrativo com relatórios. Antes de construir, queremos entender como o seu empreendimento funciona hoje.</p>
+    <div class="info-chips">
+      <span class="info-chip"><i class="fas fa-clock"></i> 2 minutos</span>
+      <span class="info-chip"><i class="fas fa-mouse-pointer"></i> Só cliques</span>
+      <span class="info-chip"><i class="fas fa-shield-alt"></i> Sem compromisso</span>
+      <span class="info-chip"><i class="fas fa-gift"></i> Participação anônima</span>
+    </div>
+  </div>
+
+  <form id="form-pesquisa" autocomplete="off" onsubmit="return false;">
+
+    <div class="section ativo" data-sec="1">
+      <div class="section-head">
+        <div class="num">1</div>
+        <div class="txt"><h3>Identificação</h3><p>Dados básicos do empreendimento</p></div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q1">Nome do estabelecimento<span class="opt-tag">Opcional</span></label>
+        <input type="text" id="q1" name="q1" placeholder="Ex: Pizzaria do Zé">
+      </div>
+
+      <div class="q">
+        <label class="q-label">Tipo de estabelecimento<span class="req">*</span><span class="multi-tag">Múltipla</span><span class="q-hint">Pode marcar mais de um</span></label>
+        <div class="opts cols-2">
+          <label class="opt"><input type="checkbox" name="q2" value="Pizzaria" required><span class="mark"></span><span class="txt">Pizzaria</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Hamburgueria"><span class="mark"></span><span class="txt">Hamburgueria</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Lanchonete"><span class="mark"></span><span class="txt">Lanchonete</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Açaí / Sorveteria"><span class="mark"></span><span class="txt">Açaí / Sorveteria</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Restaurante"><span class="mark"></span><span class="txt">Restaurante</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Cafeteria"><span class="mark"></span><span class="txt">Cafeteria</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Comida japonesa"><span class="mark"></span><span class="txt">Comida japonesa</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Padaria / Confeitaria"><span class="mark"></span><span class="txt">Padaria / Confeitaria</span></label>
+          <label class="opt"><input type="checkbox" name="q2" value="Outro"><span class="mark"></span><span class="txt">Outro</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Tempo de operação<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q3" value="Menos de 1 ano" required><span class="mark"></span><span class="txt">Menos de 1 ano</span></label>
+          <label class="opt radio"><input type="radio" name="q3" value="1 a 3 anos"><span class="mark"></span><span class="txt">1 a 3 anos</span></label>
+          <label class="opt radio"><input type="radio" name="q3" value="3 a 5 anos"><span class="mark"></span><span class="txt">3 a 5 anos</span></label>
+          <label class="opt radio"><input type="radio" name="q3" value="Mais de 5 anos"><span class="mark"></span><span class="txt">Mais de 5 anos</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" data-sec="2">
+      <div class="section-head">
+        <div class="num">2</div>
+        <div class="txt"><h3>Operação hoje</h3><p>Como o seu dia a dia funciona atualmente</p></div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Quantos pedidos por dia (média)<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q4" value="Até 20" required><span class="mark"></span><span class="txt">Até 20</span></label>
+          <label class="opt radio"><input type="radio" name="q4" value="21 a 50"><span class="mark"></span><span class="txt">21 a 50</span></label>
+          <label class="opt radio"><input type="radio" name="q4" value="51 a 100"><span class="mark"></span><span class="txt">51 a 100</span></label>
+          <label class="opt radio"><input type="radio" name="q4" value="Mais de 100"><span class="mark"></span><span class="txt">Mais de 100</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Ticket médio por pedido<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q5" value="Até R$ 30" required><span class="mark"></span><span class="txt">Até R$ 30</span></label>
+          <label class="opt radio"><input type="radio" name="q5" value="R$ 30 a R$ 50"><span class="mark"></span><span class="txt">R$ 30 a R$ 50</span></label>
+          <label class="opt radio"><input type="radio" name="q5" value="R$ 50 a R$ 70"><span class="mark"></span><span class="txt">R$ 50 a R$ 70</span></label>
+          <label class="opt radio"><input type="radio" name="q5" value="R$ 70 a R$ 100"><span class="mark"></span><span class="txt">R$ 70 a R$ 100</span></label>
+          <label class="opt radio"><input type="radio" name="q5" value="Acima de R$ 100"><span class="mark"></span><span class="txt">Acima de R$ 100</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Quais canais você usa hoje?<span class="req">*</span><span class="multi-tag">Múltipla</span><span class="q-hint">Pode marcar mais de um</span></label>
+        <div class="opts cols-2">
+          <label class="opt"><input type="checkbox" name="q6" value="WhatsApp" required><span class="mark"></span><span class="txt">WhatsApp</span></label>
+          <label class="opt"><input type="checkbox" name="q6" value="iFood"><span class="mark"></span><span class="txt">iFood</span></label>
+          <label class="opt"><input type="checkbox" name="q6" value="Telefone"><span class="mark"></span><span class="txt">Telefone</span></label>
+          <label class="opt"><input type="checkbox" name="q6" value="Presencial / balcão"><span class="mark"></span><span class="txt">Presencial / balcão</span></label>
+          <label class="opt"><input type="checkbox" name="q6" value="Site próprio"><span class="mark"></span><span class="txt">Site próprio</span></label>
+          <label class="opt"><input type="checkbox" name="q6" value="Instagram / rede social"><span class="mark"></span><span class="txt">Instagram / rede social</span></label>
+          <label class="opt"><input type="checkbox" name="q6" value="Outro aplicativo"><span class="mark"></span><span class="txt">Outro aplicativo</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Qual é o seu canal PRINCIPAL?<span class="req">*</span><span class="q-hint">Escolha só um</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q7" value="WhatsApp" required><span class="mark"></span><span class="txt">WhatsApp</span></label>
+          <label class="opt radio"><input type="radio" name="q7" value="iFood"><span class="mark"></span><span class="txt">iFood</span></label>
+          <label class="opt radio"><input type="radio" name="q7" value="Telefone"><span class="mark"></span><span class="txt">Telefone</span></label>
+          <label class="opt radio"><input type="radio" name="q7" value="Presencial / balcão"><span class="mark"></span><span class="txt">Presencial / balcão</span></label>
+          <label class="opt radio"><input type="radio" name="q7" value="Site próprio"><span class="mark"></span><span class="txt">Site próprio</span></label>
+          <label class="opt radio"><input type="radio" name="q7" value="Instagram / rede social"><span class="mark"></span><span class="txt">Instagram / rede social</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Quem atende os pedidos hoje<span class="req">*</span><span class="multi-tag">Múltipla</span><span class="q-hint">Pode marcar mais de um</span></label>
+        <div class="opts cols-2">
+          <label class="opt"><input type="checkbox" name="q8" value="Eu mesmo(a)" required><span class="mark"></span><span class="txt">Eu mesmo(a)</span></label>
+          <label class="opt"><input type="checkbox" name="q8" value="Atendente contratado"><span class="mark"></span><span class="txt">Atendente contratado</span></label>
+          <label class="opt"><input type="checkbox" name="q8" value="Família"><span class="mark"></span><span class="txt">Família</span></label>
+          <label class="opt"><input type="checkbox" name="q8" value="Sistema automatizado"><span class="mark"></span><span class="txt">Sistema automatizado</span></label>
+          <label class="opt"><input type="checkbox" name="q8" value="Outro"><span class="mark"></span><span class="txt">Outro</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" data-sec="3">
+      <div class="section-head">
+        <div class="num">3</div>
+        <div class="txt"><h3>Dores do dia a dia</h3><p>O que atrapalha a operação</p></div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Qual é a maior dificuldade que você enfrenta hoje?<span class="opt-tag">Opcional</span><span class="q-hint">Clique numa sugestão ou escreva com suas palavras</span></label>
+        <textarea id="q9" name="q9" placeholder="Ex: perde pedido, atrasa resposta..."></textarea>
+        <div class="chips" data-target="q9">
+          <span class="chip">Demora na resposta</span>
+          <span class="chip">Perco pedidos</span>
+          <span class="chip">Cliente reclama do tempo</span>
+          <span class="chip">Anoto tudo à mão</span>
+          <span class="chip">Erro no pedido</span>
+          <span class="chip">Sem controle de venda</span>
+          <span class="chip">Falta de atendente</span>
+          <span class="chip">Comissão alta do iFood</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Você já perdeu pedido por demora na resposta?<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q10" value="Sim, com frequência" required><span class="mark"></span><span class="txt">Sim, com frequência</span></label>
+          <label class="opt radio"><input type="radio" name="q10" value="Às vezes"><span class="mark"></span><span class="txt">Às vezes</span></label>
+          <label class="opt radio"><input type="radio" name="q10" value="Raramente"><span class="mark"></span><span class="txt">Raramente</span></label>
+          <label class="opt radio"><input type="radio" name="q10" value="Nunca"><span class="mark"></span><span class="txt">Nunca</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Quanto tempo leva, em média, para confirmar um pedido?<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q11" value="Menos de 2 minutos" required><span class="mark"></span><span class="txt">Menos de 2 minutos</span></label>
+          <label class="opt radio"><input type="radio" name="q11" value="2 a 5 minutos"><span class="mark"></span><span class="txt">2 a 5 minutos</span></label>
+          <label class="opt radio"><input type="radio" name="q11" value="5 a 15 minutos"><span class="mark"></span><span class="txt">5 a 15 minutos</span></label>
+          <label class="opt radio"><input type="radio" name="q11" value="Mais de 15 minutos"><span class="mark"></span><span class="txt">Mais de 15 minutos</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" data-sec="4">
+      <div class="section-head">
+        <div class="num">4</div>
+        <div class="txt"><h3>Volume e faturamento</h3><p>Faixas aproximadas, nada exato</p></div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Faturamento mensal aproximado<span class="opt-tag">Opcional</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q12" value="Até R$ 20 mil"><span class="mark"></span><span class="txt">Até R$ 20 mil</span></label>
+          <label class="opt radio"><input type="radio" name="q12" value="R$ 20 mil a R$ 50 mil"><span class="mark"></span><span class="txt">R$ 20 mil a R$ 50 mil</span></label>
+          <label class="opt radio"><input type="radio" name="q12" value="R$ 50 mil a R$ 100 mil"><span class="mark"></span><span class="txt">R$ 50 mil a R$ 100 mil</span></label>
+          <label class="opt radio"><input type="radio" name="q12" value="R$ 100 mil a R$ 200 mil"><span class="mark"></span><span class="txt">R$ 100 mil a R$ 200 mil</span></label>
+          <label class="opt radio"><input type="radio" name="q12" value="Acima de R$ 200 mil"><span class="mark"></span><span class="txt">Acima de R$ 200 mil</span></label>
+          <label class="opt radio"><input type="radio" name="q12" value="Prefiro não informar"><span class="mark"></span><span class="txt">Prefiro não informar</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Que parte do faturamento vem de delivery?<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q13" value="Até 20%" required><span class="mark"></span><span class="txt">Até 20%</span></label>
+          <label class="opt radio"><input type="radio" name="q13" value="21% a 40%"><span class="mark"></span><span class="txt">21% a 40%</span></label>
+          <label class="opt radio"><input type="radio" name="q13" value="41% a 60%"><span class="mark"></span><span class="txt">41% a 60%</span></label>
+          <label class="opt radio"><input type="radio" name="q13" value="61% a 80%"><span class="mark"></span><span class="txt">61% a 80%</span></label>
+          <label class="opt radio"><input type="radio" name="q13" value="Mais de 80%"><span class="mark"></span><span class="txt">Mais de 80%</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" data-sec="5">
+      <div class="section-head">
+        <div class="num">5</div>
+        <div class="txt"><h3>Ferramentas e custos</h3><p>O que você já usa e quanto paga</p></div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Você usa iFood hoje?<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q14" value="Sim" required><span class="mark"></span><span class="txt">Sim</span></label>
+          <label class="opt radio"><input type="radio" name="q14" value="Não"><span class="mark"></span><span class="txt">Não</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Se usa iFood, quanto paga de comissão?<span class="opt-tag">Opcional</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q15" value="Não sei"><span class="mark"></span><span class="txt">Não sei</span></label>
+          <label class="opt radio"><input type="radio" name="q15" value="Até 12%"><span class="mark"></span><span class="txt">Até 12%</span></label>
+          <label class="opt radio"><input type="radio" name="q15" value="12% a 20%"><span class="mark"></span><span class="txt">12% a 20%</span></label>
+          <label class="opt radio"><input type="radio" name="q15" value="20% a 27%"><span class="mark"></span><span class="txt">20% a 27%</span></label>
+          <label class="opt radio"><input type="radio" name="q15" value="Mais de 27%"><span class="mark"></span><span class="txt">Mais de 27%</span></label>
+          <label class="opt radio"><input type="radio" name="q15" value="Não uso iFood"><span class="mark"></span><span class="txt">Não uso iFood</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Você usa algum cardápio digital ou sistema de pedido?<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q16" value="Sim" required><span class="mark"></span><span class="txt">Sim</span></label>
+          <label class="opt radio"><input type="radio" name="q16" value="Não"><span class="mark"></span><span class="txt">Não</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q17">Se usa, qual sistema e quanto paga por mês?<span class="opt-tag">Opcional</span><span class="q-hint">Clique numa sugestão ou escreva</span></label>
+        <input type="text" id="q17" name="q17" placeholder="Ex: Goomer R$ 150">
+        <div class="chips" data-target="q17">
+          <span class="chip">Goomer</span>
+          <span class="chip">Anota AI</span>
+          <span class="chip">Saipos</span>
+          <span class="chip">Cardápio Web</span>
+          <span class="chip">Uso sistema próprio</span>
+          <span class="chip">Não uso nada</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" data-sec="6">
+      <div class="section-head">
+        <div class="num">6</div>
+        <div class="txt"><h3>Pagamento</h3><p>Como você recebe hoje</p></div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Quais meios de pagamento você aceita?<span class="req">*</span><span class="multi-tag">Múltipla</span><span class="q-hint">Pode marcar mais de um</span></label>
+        <div class="opts cols-2">
+          <label class="opt"><input type="checkbox" name="q18" value="PIX" required><span class="mark"></span><span class="txt">PIX</span></label>
+          <label class="opt"><input type="checkbox" name="q18" value="Cartão de crédito"><span class="mark"></span><span class="txt">Cartão de crédito</span></label>
+          <label class="opt"><input type="checkbox" name="q18" value="Cartão de débito"><span class="mark"></span><span class="txt">Cartão de débito</span></label>
+          <label class="opt"><input type="checkbox" name="q18" value="Dinheiro"><span class="mark"></span><span class="txt">Dinheiro</span></label>
+          <label class="opt"><input type="checkbox" name="q18" value="Vale-refeição"><span class="mark"></span><span class="txt">Vale-refeição</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" data-sec="7">
+      <div class="section-head">
+        <div class="num">7</div>
+        <div class="txt"><h3>Sobre uma solução nova</h3><p>Sua opinião sobre o produto que estamos construindo</p></div>
+      </div>
+
+      <div class="q" style="background:rgba(219,234,254,.5);border:1px solid rgba(59,130,246,.25);border-radius:10px;padding:14px 16px;margin-bottom:20px">
+        <p style="margin:0;font-size:.76rem;color:#1e40af;line-height:1.6">
+          <i class="fas fa-info-circle" style="color:var(--primary)"></i>
+          <strong>Contexto:</strong> estamos criando um sistema onde o seu empreendimento tem um <strong>link próprio</strong> pra receber pedidos (o cliente monta o pedido e paga PIX por ali) e um <strong>painel administrativo</strong> com relatórios de venda, ticket médio, bairros e horários. Sem iFood, sem comissão por pedido.
+        </p>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Interesse em ter um link próprio pra receber pedidos<span class="req">*</span></label>
+        <div class="scale">
+          <label class="scale-item"><input type="radio" name="q19" value="1" required><span class="n">1</span><span class="lbl">Nada</span></label>
+          <label class="scale-item"><input type="radio" name="q19" value="2"><span class="n">2</span><span class="lbl">Pouco</span></label>
+          <label class="scale-item"><input type="radio" name="q19" value="3"><span class="n">3</span><span class="lbl">Médio</span></label>
+          <label class="scale-item"><input type="radio" name="q19" value="4"><span class="n">4</span><span class="lbl">Bastante</span></label>
+          <label class="scale-item"><input type="radio" name="q19" value="5"><span class="n">5</span><span class="lbl">Muito</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Interesse em ter um painel com relatórios (vendas, ticket médio, bairros, horários)<span class="req">*</span></label>
+        <div class="scale">
+          <label class="scale-item"><input type="radio" name="q20" value="1" required><span class="n">1</span><span class="lbl">Nada</span></label>
+          <label class="scale-item"><input type="radio" name="q20" value="2"><span class="n">2</span><span class="lbl">Pouco</span></label>
+          <label class="scale-item"><input type="radio" name="q20" value="3"><span class="n">3</span><span class="lbl">Médio</span></label>
+          <label class="scale-item"><input type="radio" name="q20" value="4"><span class="n">4</span><span class="lbl">Bastante</span></label>
+          <label class="scale-item"><input type="radio" name="q20" value="5"><span class="n">5</span><span class="lbl">Muito</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Quanto você pagaria por mês por uma solução assim?<span class="req">*</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q21" value="Até R$ 100" required><span class="mark"></span><span class="txt">Até R$ 100</span></label>
+          <label class="opt radio"><input type="radio" name="q21" value="R$ 100 a R$ 150"><span class="mark"></span><span class="txt">R$ 100 a R$ 150</span></label>
+          <label class="opt radio"><input type="radio" name="q21" value="R$ 150 a R$ 200"><span class="mark"></span><span class="txt">R$ 150 a R$ 200</span></label>
+          <label class="opt radio"><input type="radio" name="q21" value="R$ 200 a R$ 300"><span class="mark"></span><span class="txt">R$ 200 a R$ 300</span></label>
+          <label class="opt radio"><input type="radio" name="q21" value="Mais de R$ 300"><span class="mark"></span><span class="txt">Mais de R$ 300</span></label>
+          <label class="opt radio"><input type="radio" name="q21" value="Não pagaria"><span class="mark"></span><span class="txt">Não pagaria</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q22">O que precisaria ter pra valer esse valor?<span class="opt-tag">Opcional</span><span class="q-hint">Clique nas sugestões ou escreva</span></label>
+        <textarea id="q22" name="q22" placeholder="O que é essencial pra você?"></textarea>
+        <div class="chips" data-target="q22">
+          <span class="chip">Cardápio fácil de editar</span>
+          <span class="chip">Suporte rápido</span>
+          <span class="chip">Relatório de vendas</span>
+          <span class="chip">Acompanhamento em tempo real</span>
+          <span class="chip">Sem comissão por pedido</span>
+          <span class="chip">Integração com PIX</span>
+          <span class="chip">App pro cliente</span>
+          <span class="chip">Impressão de pedido</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Você pode indicar outro dono pra responder essa pesquisa?<span class="opt-tag">Opcional</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q23" value="Sim"><span class="mark"></span><span class="txt">Sim</span></label>
+          <label class="opt radio"><input type="radio" name="q23" value="Não"><span class="mark"></span><span class="txt">Não</span></label>
+        </div>
+      </div>
+    </div>
+
+  </form>
+
+  <div class="section" data-sec="final" id="sec-final">
+    <div class="final-card">
+      <div class="final-icon"><i class="fas fa-check-circle"></i></div>
+      <h3>Pesquisa completa!</h3>
+      <p>Obrigado por dedicar seu tempo. Ao enviar, suas respostas serão registradas com segurança.</p>
+      <button class="btn btn-success btn-lg" id="btn-enviar" onclick="enviarResposta()">
+        <i class="fas fa-paper-plane"></i> Enviar resposta
+      </button>
+    </div>
+    <div class="resumo-box" id="resumo-final">
+      <h4><i class="fas fa-clipboard-check"></i> Resumo das suas respostas</h4>
+      <div id="resumo-content"></div>
+    </div>
+  </div>
+
+  <div class="section" data-sec="enviando" id="sec-enviando">
+    <div class="enviando-box ativo">
+      <div class="spinner"></div>
+      <h3 id="enviando-titulo">Enviando respostas...</h3>
+      <p id="enviando-msg">Aguarde um instante.</p>
+    </div>
+  </div>
+
+  <div class="section" data-sec="enviado" id="sec-enviado">
+    <div class="final-card">
+      <div class="final-icon"><i class="fas fa-check"></i></div>
+      <h3>Respostas registradas!</h3>
+      <p>Obrigado por participar. Suas respostas já estão com a Elite Studio Codex. Você pode fechar esta página.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav-bar" id="nav-bar">
+  <div class="nav-inner">
+    <div class="nav-info" id="nav-info">Seção <strong>1</strong> de <strong>7</strong></div>
+    <div class="nav-actions">
+      <button class="btn btn-outline" id="btn-voltar" onclick="voltarSecao()"><i class="fas fa-arrow-left"></i> Voltar</button>
+      <button class="btn-icon olho" id="btn-olho" onclick="irParaFinal()" disabled>
+        <i class="fas fa-eye"></i>
+        <span class="tooltip" id="tooltip-olho">Preencha tudo pra visualizar</span>
+      </button>
+      <button class="btn btn-navy" id="btn-proximo" onclick="proximaSecao()">Próximo <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Pronto!</span></div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJhsyxP84aKLkxukfosggjOOWdVE4gVeAzbknzHKDpydAu0T_Ww6Oe1c54knhP3_99/exec';
+
+const TOTAL_SECOES = 7;
+let secaoAtual = 1;
+const steps = [
+  { n:1, label:'Identificação', icon:'fa-user' },
+  { n:2, label:'Operação', icon:'fa-store' },
+  { n:3, label:'Dores', icon:'fa-heart-broken' },
+  { n:4, label:'Volume', icon:'fa-chart-line' },
+  { n:5, label:'Ferramentas', icon:'fa-tools' },
+  { n:6, label:'Pagamento', icon:'fa-credit-card' },
+  { n:7, label:'Interesse', icon:'fa-star' }
+];
+
+function renderStepDots(){
+  const box = document.getElementById('step-dots');
+  box.innerHTML = steps.map(s => {
+    const cls = s.n === secaoAtual ? 'ativo' : (s.n < secaoAtual ? 'ok' : '');
+    const ic = s.n < secaoAtual ? 'fa-check' : s.icon;
+    return `<span class="step-dot ${cls}"><i class="fas ${ic}"></i> ${s.label}</span>`;
+  }).join('');
+}
+function renderProgresso(){
+  const pct = Math.round(((secaoAtual - 1) / (TOTAL_SECOES)) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  const st = steps[secaoAtual - 1] || { label:'Final' };
+  document.getElementById('progress-lbl').textContent = `Seção ${secaoAtual} de ${TOTAL_SECOES} · ${st.label}`;
+  document.getElementById('nav-info').innerHTML = `Seção <strong>${secaoAtual}</strong> de <strong>${TOTAL_SECOES}</strong>`;
+}
+function mostrarSecao(n){
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
+  const alvo = document.querySelector(`.section[data-sec="${n}"]`);
+  if(alvo) alvo.classList.add('ativo');
+  secaoAtual = n;
+  renderProgresso();
+  renderStepDots();
+  document.getElementById('btn-voltar').disabled = (n === 1);
+  const btnProx = document.getElementById('btn-proximo');
+  if(n === TOTAL_SECOES){
+    btnProx.innerHTML = 'Finalizar <i class="fas fa-check"></i>';
+  } else {
+    btnProx.innerHTML = 'Próximo <i class="fas fa-arrow-right"></i>';
+  }
+  atualizarBotoesFixos();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function proximaSecao(){
+  if(!validarSecao(secaoAtual)) return;
+  if(secaoAtual < TOTAL_SECOES){ mostrarSecao(secaoAtual + 1); }
+  else { finalizar(); }
+}
+function voltarSecao(){ if(secaoAtual > 1) mostrarSecao(secaoAtual - 1); }
+
+function validarSecao(n){
+  const sec = document.querySelector(`.section[data-sec="${n}"]`);
+  if(!sec) return true;
+  const requireds = sec.querySelectorAll('[required]');
+  const nomesChecados = new Set();
+  for(const el of requireds){
+    const nome = el.name;
+    if(!nome) continue;
+    if(nomesChecados.has(nome)) continue;
+    nomesChecados.add(nome);
+    const grupo = sec.querySelectorAll(`[name="${nome}"]`);
+    const tipo = grupo[0].type;
+    if(tipo === 'radio' || tipo === 'checkbox'){
+      const algumMarcado = Array.from(grupo).some(g => g.checked);
+      if(!algumMarcado){
+        toast('Falta responder uma pergunta obrigatória', 'erro');
+        grupo[0].closest('.q').scrollIntoView({ behavior:'smooth', block:'center' });
+        return false;
+      }
+    } else {
+      if(!el.value.trim()){
+        toast('Campo obrigatório em branco', 'erro');
+        el.focus();
+        el.scrollIntoView({ behavior:'smooth', block:'center' });
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function tudoPreenchido(){
+  const secs = document.querySelectorAll('.section[data-sec]');
+  for(const sec of secs){
+    const secNum = sec.getAttribute('data-sec');
+    if(secNum === 'final' || secNum === 'enviando' || secNum === 'enviado') continue;
+    const requireds = sec.querySelectorAll('[required]');
+    const nomesChecados = new Set();
+    for(const el of requireds){
+      const nome = el.name;
+      if(!nome) continue;
+      if(nomesChecados.has(nome)) continue;
+      nomesChecados.add(nome);
+      const grupo = sec.querySelectorAll(`[name="${nome}"]`);
+      const tipo = grupo[0].type;
+      if(tipo === 'radio' || tipo === 'checkbox'){
+        const algumMarcado = Array.from(grupo).some(g => g.checked);
+        if(!algumMarcado) return false;
+      } else {
+        if(!el.value.trim()) return false;
+      }
+    }
+  }
+  return true;
+}
+function atualizarBotoesFixos(){
+  const ok = tudoPreenchido();
+  const bOlho = document.getElementById('btn-olho');
+  const tOlho = document.getElementById('tooltip-olho');
+  bOlho.disabled = !ok;
+  if(ok){
+    bOlho.classList.add('ativo-pulse');
+    tOlho.textContent = 'Visualizar respostas';
+  } else {
+    bOlho.classList.remove('ativo-pulse');
+    tOlho.textContent = 'Preencha tudo pra visualizar';
+  }
+}
+
+document.addEventListener('click', (e) => {
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  const wrap = chip.closest('.chips');
+  const targetId = wrap.dataset.target;
+  const input = document.getElementById(targetId);
+  if(!input) return;
+  const texto = chip.textContent.trim();
+  const atual = input.value.trim();
+  const jaTem = atual.split(/,\s*/).map(s => s.trim()).filter(Boolean).includes(texto);
+  if(jaTem){
+    const novo = atual.split(/,\s*/).map(s => s.trim()).filter(s => s && s !== texto).join(', ');
+    input.value = novo;
+    chip.classList.remove('ativo');
+  } else {
+    input.value = atual ? (atual + ', ' + texto) : texto;
+    chip.classList.add('ativo');
+  }
+  input.dispatchEvent(new Event('input'));
+});
+document.addEventListener('input', (e) => {
+  if(e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') return;
+  const id = e.target.id;
+  if(!id) return;
+  const wrap = document.querySelector(`.chips[data-target="${id}"]`);
+  if(!wrap) return;
+  const valores = e.target.value.split(/,\s*/).map(s => s.trim());
+  wrap.querySelectorAll('.chip').forEach(c => {
+    c.classList.toggle('ativo', valores.includes(c.textContent.trim()));
+  });
+});
+
+document.addEventListener('change', atualizarBotoesFixos);
+document.addEventListener('input', atualizarBotoesFixos);
+
+function coletarDados(){
+  const fd = new FormData(document.getElementById('form-pesquisa'));
+  const dados = {};
+  const cb = {};
+  for(const [k, v] of fd.entries()){
+    if(cb[k]){ cb[k].push(v); }
+    else if(dados[k] !== undefined){ cb[k] = [dados[k], v]; dados[k] = cb[k]; }
+    else { dados[k] = v; }
+  }
+  document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
+    if(!Array.isArray(dados[el.name])) dados[el.name] = [dados[el.name]].filter(Boolean);
+  });
+  for(let i = 1; i <= 23; i++){
+    const k = 'q' + i;
+    if(dados[k] === undefined) dados[k] = '';
+    if(Array.isArray(dados[k])) dados[k] = dados[k].join(', ');
+  }
+  return dados;
+}
+function labelPergunta(id){
+  const map = {
+    q1:'Nome do estabelecimento', q2:'Tipo', q3:'Tempo de operação',
+    q4:'Pedidos/dia', q5:'Ticket médio', q6:'Canais usados', q7:'Canal principal', q8:'Quem atende',
+    q9:'Maior dificuldade', q10:'Já perdeu pedido', q11:'Tempo de confirmação',
+    q12:'Faturamento mensal', q13:'% delivery',
+    q14:'Usa iFood', q15:'Comissão iFood', q16:'Usa cardápio digital', q17:'Sistema e valor',
+    q18:'Meios de pagamento aceitos',
+    q19:'Interesse link próprio', q20:'Interesse painel', q21:'Quanto pagaria',
+    q22:'O que precisaria ter', q23:'Pode indicar outro'
+  };
+  return map[id] || id;
+}
+function renderResumo(){
+  const d = coletarDados();
+  const box = document.getElementById('resumo-content');
+  const linhas = [];
+  for(let i = 1; i <= 23; i++){
+    const k = 'q' + i;
+    if(d[k] !== undefined && d[k] !== ''){
+      linhas.push(`<div class="resumo-linha"><span class="q">${labelPergunta(k)}</span><span class="a">${escapeHtml(d[k])}</span></div>`);
+    }
+  }
+  box.innerHTML = linhas.join('') || '<div class="resumo-linha"><span class="q">Sem respostas registradas.</span></div>';
+}
+
+function irParaFinal(){
+  if(!tudoPreenchido()){ toast('Faltam respostas obrigatórias', 'erro'); return; }
+  finalizar(true);
+}
+
+function finalizar(pular){
+  if(!pular && !validarSecao(secaoAtual)) return;
+  if(!tudoPreenchido()){ toast('Faltam respostas obrigatórias', 'erro'); return; }
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
+  document.getElementById('sec-final').classList.add('ativo');
+  document.getElementById('nav-bar').classList.add('escondida');
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-pct').textContent = '100%';
+  document.getElementById('progress-lbl').textContent = 'Concluído';
+  document.querySelectorAll('.step-dot').forEach(el => { el.classList.remove('ativo'); el.classList.add('ok'); });
+  renderResumo();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+async function enviarResposta(){
+  const btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
+  document.getElementById('sec-enviando').classList.add('ativo');
+  window.scrollTo({ top:0, behavior:'smooth' });
+
+  const payload = coletarDados();
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    await new Promise(r => setTimeout(r, 900));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
+    document.getElementById('sec-enviado').classList.add('ativo');
+    window.scrollTo({ top:0, behavior:'smooth' });
+  } catch(err) {
+    console.error(err);
+    toast('Erro ao enviar. Tente novamente.', 'erro');
+    document.getElementById('sec-enviando').classList.remove('ativo');
+    document.getElementById('sec-final').classList.add('ativo');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar resposta';
+  }
+}
+
+let _toastTimeout = null;
+function toast(msg, tipo){
+  const el = document.getElementById('toast');
+  const ic = el.querySelector('i');
+  const tx = document.getElementById('toast-msg');
+  tx.textContent = msg;
+  if(tipo === 'erro'){ el.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)'; ic.className = 'fas fa-exclamation-circle'; }
+  else { el.style.background = 'linear-gradient(135deg,#10b981,#059669)'; ic.className = 'fas fa-check-circle'; }
+  el.classList.add('ativo');
+  if(_toastTimeout) clearTimeout(_toastTimeout);
+  _toastTimeout = setTimeout(() => el.classList.remove('ativo'), 2600);
+}
+
+function escapeHtml(s){
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderStepDots();
+  renderProgresso();
+  mostrarSecao(1);
+  atualizarBotoesFixos();
+});
+</script>
+</body>
+</html>

@@ -283,7 +283,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .btn-warn:hover{box-shadow:0 6px 20px rgba(245,158,11,.55)}
 .btn-lg{padding:16px 32px;font-size:.9rem;border-radius:12px}
 
-/* ============ TELA FINAL — COMPACTA ============ */
+/* TELA FINAL — COMPACTA */
 .final-topo{
   background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(5,150,105,.03));
   border:1.5px solid rgba(16,185,129,.3);
@@ -310,7 +310,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   font-weight:800;
 }
 
-/* TÍTULO DESTACADO — CTA de curiosidade */
 .titulo-resumo-cta{
   margin-top:18px;
   padding:18px 18px 16px;
@@ -383,7 +382,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .indicacao-cta .btn-compartilhar:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.55)}
 .indicacao-cta .btn-compartilhar i{font-size:1.15rem}
 
-/* RESUMO (narrativa) — fica no fim, quem quiser rola */
 .resumo-box{
   background:rgba(255,255,255,.92);border:1px solid rgba(59,130,246,.2);
   border-radius:var(--radius-sm);padding:20px;margin-top:14px;text-align:left;
@@ -508,7 +506,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     <span class="badge-prod"><i class="fas fa-chart-line"></i> Melhor diagnóstico de empreendimentos</span>
   </div>
 
-  <div class="progress-card">
+  <div class="progress-card" id="progress-card">
     <div class="progress-head">
       <span class="lbl" id="progress-lbl">Seção 1 de 8 · Identificação</span>
       <span class="pct" id="progress-pct">0%</span>
@@ -908,20 +906,18 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
   </form>
 
-  <!-- TELA FINAL — COMPACTA, TUDO VISÍVEL SEM ROLAR -->
+  <!-- TELA FINAL -->
   <div class="section" data-sec="final" id="sec-final">
 
-    <!-- 1. TOPO COMPACTO -->
     <div class="final-topo">
       <div class="ic"><i class="fas fa-check"></i></div>
       <div class="txt">
-        <h3>Pesquisa concluída</h3>
-        <p>Tudo pronto. Só falta confirmar o envio.</p>
+        <h3 id="final-titulo">Pesquisa concluída</h3>
+        <p id="final-sub">Tudo pronto. Só falta confirmar o envio.</p>
       </div>
     </div>
 
-    <!-- 2. BOTÕES DE AÇÃO — VISÍVEIS SEM ROLAR -->
-    <div class="acoes-principais">
+    <div class="acoes-principais" id="acoes-primeira-vez">
       <button type="button" class="btn btn-success" id="btn-enviar" onclick="enviarResposta()">
         <i class="fas fa-paper-plane"></i> Enviar resposta
       </button>
@@ -930,14 +926,21 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </button>
     </div>
 
-    <!-- 3. TÍTULO DESTACADO — CTA DE CURIOSIDADE -->
+    <div class="acoes-principais" id="acoes-ja-enviado" style="display:none">
+      <button type="button" class="btn btn-navy" onclick="baixarRespostas()">
+        <i class="fas fa-download"></i> Baixar minhas respostas
+      </button>
+      <button type="button" class="btn btn-outline" onclick="refazerPesquisa()">
+        <i class="fas fa-redo"></i> Refazer pesquisa
+      </button>
+    </div>
+
     <div class="titulo-resumo-cta">
       <h3><i class="fas fa-magnifying-glass-chart"></i> Como a gente leu o seu negócio</h3>
-      <p>Antes de enviar, veja como a sua empresa foi interpretada pelas suas respostas.</p>
+      <p>Veja como a sua empresa foi interpretada pelas suas respostas.</p>
       <span class="seta"><i class="fas fa-chevron-down"></i></span>
     </div>
 
-    <!-- 4. CONHEÇA ALGUÉM -->
     <div class="indicacao-box">
       <h5><i class="fas fa-user-plus"></i> Você conhece alguém que também poderia nos ajudar com essa pesquisa?</h5>
       <p class="sub">Se sim, a gente já deixa tudo pronto pra você compartilhar.</p>
@@ -956,7 +959,6 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
-    <!-- 5. NARRATIVA — só quem tem curiosidade rola -->
     <div class="resumo-box" id="resumo-final">
       <h4><i class="fas fa-clipboard-check"></i> Resumo das suas respostas</h4>
       <p class="resumo-sub">Leitura completa do seu negócio, gerada a partir do que você respondeu.</p>
@@ -981,6 +983,14 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
         <h3 style="font-size:1.05rem;margin-bottom:4px">Respostas registradas!</h3>
         <p style="font-size:.78rem">Obrigado por participar. Suas respostas já estão com a Elite Studio Codex.</p>
       </div>
+    </div>
+    <div class="acoes-principais" style="margin-top:16px">
+      <button type="button" class="btn btn-outline" onclick="verDiagnosticoSalvo()">
+        <i class="fas fa-eye"></i> Ver meu diagnóstico
+      </button>
+      <button type="button" class="btn btn-navy" onclick="baixarRespostas()">
+        <i class="fas fa-download"></i> Baixar minhas respostas
+      </button>
     </div>
   </div>
 
@@ -1025,8 +1035,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyN7SmURXiakmuSr5Upwts4XBvdT1SfB9bESx03Mh46GF2_muQ6R08yGwOQY4m_DYoi/exec';
-
 const LINK_PESQUISA = 'https://pesquisa-de-mercado-elite-studio-codex.vercel.app/';
+const STORAGE_KEY = 'esc_pesquisa_respostas_v1';
 
 const MENSAGEM_WHATSAPP = `👋 Olá! 
 
@@ -1048,6 +1058,7 @@ Valeu pela força! 🚀`;
 
 const TOTAL_SECOES = 8;
 let secaoAtual = 1;
+let modoJaEnviado = false;
 const steps = [
   { n:1, label:'Identificação', icon:'fa-user' },
   { n:2, label:'Operação', icon:'fa-store' },
@@ -1059,6 +1070,56 @@ const steps = [
   { n:8, label:'Contato', icon:'fa-map-marker-alt', opc:true }
 ];
 
+/* ========= PERSISTÊNCIA ========= */
+function salvarRespostas(dados){
+  try{
+    const payload = { dados, data: new Date().toISOString() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  }catch(e){ console.warn('Não foi possível salvar', e); }
+}
+function carregarRespostas(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return null;
+    const obj = JSON.parse(raw);
+    return obj && obj.dados ? obj : null;
+  }catch(e){ return null; }
+}
+function limparRespostas(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+function preencherFormularioComDados(d){
+  if(!d) return;
+  // Preenche inputs simples
+  ['q1','q9','q17','q22','q26','q27','q28','q29','q30'].forEach(k => {
+    if(d[k] !== undefined && d[k] !== ''){
+      const el = document.getElementById(k);
+      if(el) el.value = d[k];
+    }
+  });
+  // Preenche radios e checkboxes
+  for(let i = 1; i <= 30; i++){
+    const k = 'q' + i;
+    if(!d[k]) continue;
+    const valores = String(d[k]).split(/,\s*/).map(s => s.trim()).filter(Boolean);
+    const grupo = document.querySelectorAll(`[name="${k}"]`);
+    grupo.forEach(el => {
+      if(valores.includes(el.value)) el.checked = true;
+    });
+  }
+  // Atualiza chips
+  document.querySelectorAll('.chips').forEach(wrap => {
+    const targetId = wrap.dataset.target;
+    const input = document.getElementById(targetId);
+    if(!input) return;
+    const valores = input.value.split(/,\s*/).map(s => s.trim());
+    wrap.querySelectorAll('.chip').forEach(c => {
+      c.classList.toggle('ativo', valores.includes(c.textContent.trim()));
+    });
+  });
+}
+
+/* ========= UI ========= */
 function renderStepDots(){
   const box = document.getElementById('step-dots');
   box.innerHTML = steps.map(s => {
@@ -1352,7 +1413,7 @@ function compartilharWhatsApp(){
 }
 
 async function baixarRespostas(){
-  const d = coletarDados();
+  const d = modoJaEnviado ? carregarRespostas().dados : coletarDados();
   const blocos = gerarNarrativa(d);
   if(!blocos.length){ toast('Sem respostas para baixar', 'erro'); return; }
 
@@ -1409,6 +1470,9 @@ async function enviarResposta(){
 
   const payload = coletarDados();
 
+  // Salva local ANTES de enviar (garante persistência mesmo se a rede falhar)
+  salvarRespostas(payload);
+
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
@@ -1417,6 +1481,7 @@ async function enviarResposta(){
       body: JSON.stringify(payload)
     });
     await new Promise(r => setTimeout(r, 900));
+    modoJaEnviado = true;
     document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
     document.getElementById('sec-enviado').classList.add('ativo');
     window.scrollTo({ top:0, behavior:'smooth' });
@@ -1428,6 +1493,40 @@ async function enviarResposta(){
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar resposta';
   }
+}
+
+/* Ver diagnóstico já enviado (a partir do localStorage) */
+function verDiagnosticoSalvo(){
+  const salvo = carregarRespostas();
+  if(!salvo){ toast('Nada encontrado', 'erro'); return; }
+
+  modoJaEnviado = true;
+
+  // Preenche o form invisível pra que coletarDados funcione
+  preencherFormularioComDados(salvo.dados);
+
+  // Ajusta a tela final para o modo "já enviado"
+  document.getElementById('final-titulo').textContent = 'Você já respondeu';
+  document.getElementById('final-sub').textContent = 'Abaixo está o seu diagnóstico. Você pode baixar ou refazer.';
+  document.getElementById('acoes-primeira-vez').style.display = 'none';
+  document.getElementById('acoes-ja-enviado').style.display = 'flex';
+
+  // Mostra a tela final (sem nav-bar)
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
+  document.getElementById('sec-final').classList.add('ativo');
+  document.getElementById('nav-bar').classList.add('escondida');
+  document.getElementById('progress-card').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-pct').textContent = '100%';
+  document.getElementById('progress-lbl').textContent = 'Concluído';
+  renderResumo();
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function refazerPesquisa(){
+  if(!confirm('Isso vai limpar as suas respostas salvas neste navegador e começar de novo. Deseja continuar?')) return;
+  limparRespostas();
+  location.reload();
 }
 
 let _toastTimeout = null;
@@ -1447,7 +1546,32 @@ function escapeHtml(s){
   return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+/* ========= BOOT ========= */
 document.addEventListener('DOMContentLoaded', () => {
+  const salvo = carregarRespostas();
+
+  if(salvo){
+    // Já respondeu antes → mostra tela de "já enviado" com diagnóstico
+    modoJaEnviado = true;
+    preencherFormularioComDados(salvo.dados);
+
+    document.getElementById('final-titulo').textContent = 'Você já respondeu';
+    document.getElementById('final-sub').textContent = 'Abaixo está o seu diagnóstico. Você pode baixar ou refazer.';
+    document.getElementById('acoes-primeira-vez').style.display = 'none';
+    document.getElementById('acoes-ja-enviado').style.display = 'flex';
+
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
+    document.getElementById('sec-final').classList.add('ativo');
+    document.getElementById('nav-bar').classList.add('escondida');
+    document.getElementById('progress-card').style.display = 'none';
+    document.getElementById('progress-fill').style.width = '100%';
+    document.getElementById('progress-pct').textContent = '100%';
+    document.getElementById('progress-lbl').textContent = 'Concluído';
+    renderResumo();
+    return;
+  }
+
+  // Fluxo normal
   renderStepDots();
   renderProgresso();
   mostrarSecao(1);

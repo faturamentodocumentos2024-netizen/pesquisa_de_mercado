@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pesquisa — Sistema de Pedidos para Empreendimentos | Elite Studio Codex</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
   --primary:#3b82f6;--primary-hover:#2563eb;
@@ -84,6 +85,7 @@ body{
 .step-dot{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-size:.62rem;font-weight:700;background:rgba(148,163,184,.15);color:#64748b;border:1px solid rgba(148,163,184,.25);transition:all .25s}
 .step-dot.ativo{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff;border-color:#2563eb;box-shadow:0 0 10px rgba(59,130,246,.5)}
 .step-dot.ok{background:linear-gradient(135deg,#1e40af,#1e3a8a);color:#fff;border-color:#1e3a8a}
+.step-dot.opc{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;border-color:#d97706;box-shadow:0 0 10px rgba(245,158,11,.5)}
 .step-dot i{font-size:.62rem}
 
 .hero{
@@ -91,7 +93,7 @@ body{
   backdrop-filter:blur(20px) saturate(1.1);
   border:1px solid rgba(59,130,246,.25);
   border-radius:var(--radius-md);
-  padding:20px 22px;margin-bottom:18px;
+  padding:20px 22px;margin-bottom:22px;
   box-shadow:0 12px 30px -8px rgba(30,58,138,.22),0 0 22px rgba(59,130,246,.12);
   position:relative;overflow:hidden;
 }
@@ -120,6 +122,7 @@ body{
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .section-head{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px dashed rgba(59,130,246,.2)}
 .section-head .num{width:36px;height:36px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,var(--navy),var(--navy-dark));color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.85rem;box-shadow:0 4px 12px rgba(30,58,138,.3)}
+.section-head.opc .num{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 12px rgba(245,158,11,.35)}
 .section-head .txt h3{margin:0;font-size:.95rem;font-weight:800;color:var(--text-main);line-height:1.2}
 .section-head .txt p{margin:2px 0 0;font-size:.72rem;color:var(--text-muted);font-weight:500}
 
@@ -127,11 +130,11 @@ body{
 .q:last-child{margin-bottom:0}
 .q-label{display:block;font-size:.82rem;font-weight:700;color:var(--text-main);margin-bottom:10px;line-height:1.4}
 .q-label .req{color:#dc2626;margin-left:3px}
-.q-label .opt-tag{font-size:.62rem;color:#64748b;background:rgba(148,163,184,.15);padding:2px 8px;border-radius:8px;margin-left:6px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
+.q-label .opt-tag{font-size:.62rem;color:#92400e;background:rgba(254,243,199,.8);padding:2px 8px;border-radius:8px;margin-left:6px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border:1px solid rgba(245,158,11,.35)}
 .q-label .multi-tag{font-size:.62rem;color:#1e40af;background:rgba(219,234,254,.7);padding:2px 8px;border-radius:8px;margin-left:6px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border:1px solid rgba(59,130,246,.3)}
 .q-hint{font-size:.68rem;color:var(--text-muted);font-weight:500;display:block;margin-top:3px}
 
-input[type=text],input[type=tel],input[type=number],textarea{
+input[type=text],input[type=tel],input[type=email],input[type=number],textarea{
   width:100%;padding:11px 14px;border:1px solid rgba(59,130,246,.25);
   border-radius:var(--radius-sm);font-size:.82rem;color:var(--text-main);
   background:rgba(255,255,255,.9);font-family:inherit;outline:none;transition:all .2s;
@@ -192,6 +195,22 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .scale-item:has(input:checked) .n{color:#fff}
 .scale-item:has(input:checked) .lbl{color:#93c5fd}
 
+.aviso-opc{
+  background:linear-gradient(135deg,rgba(254,243,199,.9),rgba(254,215,170,.6));
+  border:1.5px solid rgba(245,158,11,.45);
+  border-radius:var(--radius-sm);
+  padding:14px 16px;margin-bottom:20px;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.aviso-opc .ic{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;
+  box-shadow:0 4px 10px rgba(245,158,11,.35);
+}
+.aviso-opc .txt h5{margin:0 0 4px;font-size:.76rem;font-weight:800;color:#78350f;letter-spacing:.03em;text-transform:uppercase}
+.aviso-opc .txt p{margin:0;font-size:.75rem;color:#92400e;line-height:1.55;font-weight:500}
+
 .nav-bar{
   position:fixed;bottom:0;left:0;right:0;z-index:50;
   background:rgba(255,255,255,.95);backdrop-filter:blur(20px) saturate(1.2);
@@ -227,9 +246,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   border-color:rgba(148,163,184,.3);
   color:#94a3b8;
 }
-.btn-icon.ativo-pulse{
-  animation:pulseIcon 2.2s ease-in-out infinite;
-}
+.btn-icon.ativo-pulse{animation:pulseIcon 2.2s ease-in-out infinite;}
 @keyframes pulseIcon{
   0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.5)}
   50%{box-shadow:0 0 0 8px rgba(59,130,246,0)}
@@ -260,6 +277,10 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .btn-navy:hover{box-shadow:0 6px 20px rgba(30,58,138,.6)}
 .btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.4)}
 .btn-success:hover{box-shadow:0 6px 20px rgba(16,185,129,.55)}
+.btn-wpp{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;box-shadow:0 4px 14px rgba(37,211,102,.45)}
+.btn-wpp:hover{box-shadow:0 6px 20px rgba(37,211,102,.6)}
+.btn-warn{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 4px 14px rgba(245,158,11,.4)}
+.btn-warn:hover{box-shadow:0 6px 20px rgba(245,158,11,.55)}
 .btn-lg{padding:16px 32px;font-size:.9rem;border-radius:12px}
 
 .final-card{
@@ -278,14 +299,70 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
 .resumo-box{
   background:rgba(255,255,255,.92);border:1px solid rgba(59,130,246,.2);
-  border-radius:var(--radius-sm);padding:18px;margin-top:16px;text-align:left;
+  border-radius:var(--radius-sm);padding:22px;margin-top:20px;text-align:left;
 }
-.resumo-box h4{margin:0 0 12px;font-size:.78rem;font-weight:800;color:var(--navy);text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:6px}
-.resumo-box h4 i{color:var(--primary)}
-.resumo-linha{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:.74rem;border-bottom:1px dashed rgba(59,130,246,.12)}
-.resumo-linha:last-child{border-bottom:none}
-.resumo-linha .q{color:var(--text-muted);font-weight:600;flex:1;margin:0}
-.resumo-linha .a{color:var(--navy);font-weight:700;text-align:right;max-width:55%}
+.resumo-box > h4{margin:0 0 6px;font-size:.9rem;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px}
+.resumo-box > h4 i{color:var(--primary)}
+.resumo-box .resumo-sub{margin:0 0 18px;font-size:.72rem;color:var(--text-muted);font-weight:500}
+.bloco-resumo{
+  display:flex;gap:14px;padding:16px 0;
+  border-bottom:1px dashed rgba(59,130,246,.15);
+}
+.bloco-resumo:last-child{border-bottom:none;padding-bottom:0}
+.bloco-resumo:first-of-type{padding-top:0}
+.bloco-ic{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;box-shadow:0 4px 10px rgba(30,58,138,.25);
+}
+.bloco-ic.gold{background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 10px rgba(245,158,11,.3)}
+.bloco-txt h5{margin:0 0 6px;font-size:.68rem;font-weight:800;color:var(--navy);letter-spacing:.06em;text-transform:uppercase}
+.bloco-txt p{margin:0;font-size:.86rem;color:#334155;line-height:1.7}
+.bloco-txt p + p{margin-top:8px}
+.bloco-txt p strong{color:var(--navy);font-weight:800}
+.resumo-acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;justify-content:center}
+
+.indicacao-box{
+  background:linear-gradient(135deg,rgba(37,211,102,.08),rgba(18,140,126,.04));
+  border:1.5px solid rgba(37,211,102,.35);
+  border-radius:var(--radius-sm);
+  padding:20px;margin-top:22px;text-align:left;
+}
+.indicacao-box h5{margin:0 0 4px;font-size:.85rem;font-weight:800;color:#065f46;display:flex;align-items:center;gap:8px}
+.indicacao-box h5 i{color:#25d366}
+.indicacao-box .sub{margin:0 0 14px;font-size:.74rem;color:#047857;font-weight:500}
+.indicacao-box .opts-ind{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:0}
+.indicacao-box .opt-ind{
+  flex:1;min-width:120px;padding:11px 16px;border-radius:var(--radius-sm);
+  border:1.5px solid rgba(37,211,102,.35);background:rgba(255,255,255,.9);
+  cursor:pointer;text-align:center;font-weight:700;font-size:.8rem;color:#065f46;
+  transition:all .22s;user-select:none;
+}
+.indicacao-box .opt-ind:hover{border-color:#25d366;transform:translateY(-1px)}
+.indicacao-box .opt-ind.ativo{background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;border-color:#128c7e;box-shadow:0 4px 12px rgba(37,211,102,.35)}
+
+.indicacao-cta{
+  display:none;margin-top:16px;padding-top:16px;
+  border-top:1px dashed rgba(37,211,102,.3);
+}
+.indicacao-cta.ativo{display:block;animation:fadeUp .3s ease}
+.indicacao-cta .msg{
+  background:rgba(255,255,255,.95);border:1px solid rgba(37,211,102,.3);
+  border-radius:var(--radius-sm);padding:14px 16px;
+  font-size:.76rem;color:#334155;line-height:1.6;margin-bottom:14px;
+}
+.indicacao-cta .msg strong{color:#065f46}
+.indicacao-cta .btn-compartilhar{
+  width:100%;padding:14px 20px;border-radius:var(--radius-sm);border:none;cursor:pointer;
+  background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;
+  font-weight:800;font-size:.86rem;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 6px 18px rgba(37,211,102,.4);
+  transition:all .25s;
+}
+.indicacao-cta .btn-compartilhar:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.55)}
+.indicacao-cta .btn-compartilhar i{font-size:1.15rem}
 
 .enviando-box{
   display:none;flex-direction:column;align-items:center;gap:16px;
@@ -315,6 +392,36 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 .toast.ativo{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast i{font-size:.9rem}
 
+#png-template{
+  position:fixed;left:-9999px;top:0;
+  width:900px;
+  background:linear-gradient(135deg,#f8fafc,#e0f2fe,#ecfeff);
+  padding:0;font-family:'Inter',-apple-system,sans-serif;
+  color:#1e3a8a;
+}
+.png-inner{background:#fff;padding:44px 48px}
+.png-header{display:flex;align-items:center;gap:16px;padding-bottom:22px;border-bottom:3px solid #1e3a8a;margin-bottom:26px}
+.png-header img{width:72px;height:72px;object-fit:contain;background:#fff;border-radius:14px;padding:6px;box-shadow:0 6px 18px rgba(30,58,138,.2)}
+.png-header .txt h1{margin:0;font-size:1.35rem;font-weight:800;color:#1e3a8a;letter-spacing:-.01em}
+.png-header .txt span{display:block;font-size:.72rem;color:#64748b;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+.png-titulo{font-size:1.6rem;font-weight:800;color:#0f172a;margin:0 0 6px;letter-spacing:-.02em}
+.png-sub{font-size:.82rem;color:#64748b;margin:0 0 8px;font-weight:500}
+.png-data{font-size:.72rem;color:#94a3b8;margin:0 0 28px;font-weight:600;letter-spacing:.03em}
+.png-bloco{display:flex;gap:16px;padding:18px 0;border-bottom:1px dashed rgba(59,130,246,.18)}
+.png-bloco:last-child{border-bottom:none}
+.png-bloco-ic{
+  width:44px;height:44px;border-radius:12px;flex-shrink:0;
+  background:linear-gradient(135deg,#1e3a8a,#0f172a);
+  color:#fff;display:flex;align-items:center;justify-content:center;font-size:1rem;
+}
+.png-bloco-ic.gold{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.png-bloco-txt h5{margin:0 0 6px;font-size:.72rem;font-weight:800;color:#1e3a8a;letter-spacing:.08em;text-transform:uppercase}
+.png-bloco-txt p{margin:0;font-size:.92rem;color:#334155;line-height:1.7}
+.png-bloco-txt p strong{color:#1e3a8a;font-weight:800}
+.png-footer{margin-top:32px;padding-top:22px;border-top:3px solid #1e3a8a;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.png-footer .esq{font-size:.78rem;color:#1e3a8a;font-weight:700}
+.png-footer .dir{font-size:.72rem;color:#64748b;font-weight:600}
+
 @media(max-width:600px){
   .wrap{padding:14px 12px 140px}
   .top-bar{padding:12px 14px}
@@ -326,6 +433,8 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
   .nav-actions{width:100%;justify-content:space-between}
   .btn-icon{width:38px;height:38px;font-size:.85rem}
   .btn-lg{padding:14px 22px;font-size:.82rem}
+  .resumo-acoes{flex-direction:column}
+  .resumo-acoes .btn{width:100%}
 }
 </style>
 </head>
@@ -351,35 +460,36 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
   <div class="progress-card">
     <div class="progress-head">
-      <span class="lbl" id="progress-lbl">Seção 1 de 7 · Identificação</span>
+      <span class="lbl" id="progress-lbl">Seção 1 de 8 · Identificação</span>
       <span class="pct" id="progress-pct">0%</span>
     </div>
     <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
     <div class="step-dots" id="step-dots"></div>
   </div>
 
-  <div class="hero">
-    <h2>Sua opinião constrói o produto</h2>
-    <p>Estamos desenvolvendo um sistema de pedidos para o seu negócio — com loja online própria, cardápio editável e painel administrativo com relatórios. Antes de construir, queremos entender como o seu empreendimento funciona hoje.</p>
-    <div class="info-chips">
-      <span class="info-chip"><i class="fas fa-clock"></i> 2 minutos</span>
-      <span class="info-chip"><i class="fas fa-mouse-pointer"></i> Só cliques</span>
-      <span class="info-chip"><i class="fas fa-shield-alt"></i> Sem compromisso</span>
-      <span class="info-chip"><i class="fas fa-gift"></i> Participação anônima</span>
-    </div>
-  </div>
+  <form id="form-pesquisa" autocomplete="off" onsubmit="return false;" novalidate>
 
-  <form id="form-pesquisa" autocomplete="off" onsubmit="return false;">
-
+    <!-- SEÇÃO 1 -->
     <div class="section ativo" data-sec="1">
       <div class="section-head">
         <div class="num">1</div>
         <div class="txt"><h3>Identificação</h3><p>Dados básicos do empreendimento</p></div>
       </div>
 
+      <div class="hero">
+        <h2>Sua opinião constrói o produto</h2>
+        <p>Estamos desenvolvendo um sistema de pedidos para o seu negócio — com loja online própria, cardápio editável e painel administrativo com relatórios. Antes de construir, queremos entender como o seu empreendimento funciona hoje.</p>
+        <div class="info-chips">
+          <span class="info-chip"><i class="fas fa-clock"></i> 2 minutos</span>
+          <span class="info-chip"><i class="fas fa-mouse-pointer"></i> Só cliques</span>
+          <span class="info-chip"><i class="fas fa-shield-alt"></i> Sem compromisso</span>
+          <span class="info-chip"><i class="fas fa-gift"></i> Participação anônima</span>
+        </div>
+      </div>
+
       <div class="q">
-        <label class="q-label" for="q1">Nome do estabelecimento<span class="opt-tag">Opcional</span></label>
-        <input type="text" id="q1" name="q1" placeholder="Ex: Pizzaria do Zé">
+        <label class="q-label" for="q1">Nome do estabelecimento<span class="req">*</span><span class="q-hint">Precisamos de uma referência mínima</span></label>
+        <input type="text" id="q1" name="q1" placeholder="Ex: Pizzaria do Zé" required>
       </div>
 
       <div class="q">
@@ -408,6 +518,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
+    <!-- SEÇÃO 2 -->
     <div class="section" data-sec="2">
       <div class="section-head">
         <div class="num">2</div>
@@ -472,6 +583,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
+    <!-- SEÇÃO 3 -->
     <div class="section" data-sec="3">
       <div class="section-head">
         <div class="num">3</div>
@@ -514,6 +626,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
+    <!-- SEÇÃO 4 -->
     <div class="section" data-sec="4">
       <div class="section-head">
         <div class="num">4</div>
@@ -544,6 +657,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
+    <!-- SEÇÃO 5 -->
     <div class="section" data-sec="5">
       <div class="section-head">
         <div class="num">5</div>
@@ -592,6 +706,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
+    <!-- SEÇÃO 6 -->
     <div class="section" data-sec="6">
       <div class="section-head">
         <div class="num">6</div>
@@ -610,6 +725,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
     </div>
 
+    <!-- SEÇÃO 7 -->
     <div class="section" data-sec="7">
       <div class="section-head">
         <div class="num">7</div>
@@ -673,31 +789,113 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
       </div>
 
       <div class="q">
-        <label class="q-label">Você pode indicar outro dono pra responder essa pesquisa?<span class="opt-tag">Opcional</span></label>
+        <label class="q-label">Como você administra o seu negócio hoje?<span class="req">*</span></label>
         <div class="opts cols-2">
-          <label class="opt radio"><input type="radio" name="q23" value="Sim"><span class="mark"></span><span class="txt">Sim</span></label>
-          <label class="opt radio"><input type="radio" name="q23" value="Não"><span class="mark"></span><span class="txt">Não</span></label>
+          <label class="opt radio"><input type="radio" name="q24" value="Só pelo celular" required><span class="mark"></span><span class="txt">Só pelo celular</span></label>
+          <label class="opt radio"><input type="radio" name="q24" value="Só pelo computador"><span class="mark"></span><span class="txt">Só pelo computador</span></label>
+          <label class="opt radio"><input type="radio" name="q24" value="Pelo celular e computador"><span class="mark"></span><span class="txt">Pelo celular e computador</span></label>
+          <label class="opt radio"><input type="radio" name="q24" value="No papel / caderno"><span class="mark"></span><span class="txt">No papel / caderno</span></label>
         </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label">Como você preferiria acompanhar a nova solução?<span class="req">*</span><span class="q-hint">A gente quer construir pensando na sua preferência</span></label>
+        <div class="opts cols-2">
+          <label class="opt radio"><input type="radio" name="q25" value="Só pelo celular" required><span class="mark"></span><span class="txt">Só pelo celular</span></label>
+          <label class="opt radio"><input type="radio" name="q25" value="Só pelo computador"><span class="mark"></span><span class="txt">Só pelo computador</span></label>
+          <label class="opt radio"><input type="radio" name="q25" value="Tanto faz / os dois"><span class="mark"></span><span class="txt">Tanto faz / os dois</span></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEÇÃO 8 - OPCIONAL -->
+    <div class="section" data-sec="8">
+      <div class="section-head opc">
+        <div class="num">8</div>
+        <div class="txt"><h3>Contato e localização</h3><p>Seção 100% opcional — pode pular se preferir</p></div>
+      </div>
+
+      <div class="aviso-opc">
+        <div class="ic"><i class="fas fa-info-circle"></i></div>
+        <div class="txt">
+          <h5>Esta parte é opcional</h5>
+          <p>Você <strong>não é obrigado(a)</strong> a preencher nada aqui. Mas se quiser compartilhar, esses dados nos ajudam a <strong>mapear as regiões dos entrevistados</strong> e, se você permitir, entrar em contato quando o sistema estiver pronto — podendo te dar acesso antecipado e condições especiais.</p>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q26">Cidade<span class="opt-tag">Opcional</span></label>
+        <input type="text" id="q26" name="q26" placeholder="Ex: Teresina">
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q27">Zona / Região<span class="opt-tag">Opcional</span><span class="q-hint">Clique numa sugestão ou escreva</span></label>
+        <input type="text" id="q27" name="q27" placeholder="Ex: Zona Leste">
+        <div class="chips" data-target="q27">
+          <span class="chip">Zona Norte</span>
+          <span class="chip">Zona Sul</span>
+          <span class="chip">Zona Leste</span>
+          <span class="chip">Zona Oeste</span>
+          <span class="chip">Centro</span>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q28">Endereço do estabelecimento<span class="opt-tag">Opcional</span></label>
+        <input type="text" id="q28" name="q28" placeholder="Rua, número, bairro">
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q29">WhatsApp / Telefone<span class="opt-tag">Opcional</span></label>
+        <input type="tel" id="q29" name="q29" placeholder="(00) 00000-0000">
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="q30">E-mail<span class="opt-tag">Opcional</span></label>
+        <input type="email" id="q30" name="q30" placeholder="seu@email.com">
       </div>
     </div>
 
   </form>
 
+  <!-- TELA FINAL -->
   <div class="section" data-sec="final" id="sec-final">
     <div class="final-card">
       <div class="final-icon"><i class="fas fa-check-circle"></i></div>
       <h3>Pesquisa completa!</h3>
-      <p>Obrigado por dedicar seu tempo. Ao enviar, suas respostas serão registradas com segurança.</p>
-      <button class="btn btn-success btn-lg" id="btn-enviar" onclick="enviarResposta()">
-        <i class="fas fa-paper-plane"></i> Enviar resposta
-      </button>
+      <p>Antes de enviar, dá uma olhada em como a gente leu o seu negócio. Se estiver tudo certo, é só confirmar.</p>
     </div>
     <div class="resumo-box" id="resumo-final">
-      <h4><i class="fas fa-clipboard-check"></i> Resumo das suas respostas</h4>
+      <h4><i class="fas fa-clipboard-check"></i> Como a gente leu o seu negócio</h4>
+      <p class="resumo-sub">Um resumo do que você contou, na nossa leitura.</p>
       <div id="resumo-content"></div>
+      <div class="resumo-acoes">
+        <button type="button" class="btn btn-outline" onclick="baixarRespostas()"><i class="fas fa-download"></i> Baixar minhas respostas</button>
+        <button type="button" class="btn btn-success btn-lg" id="btn-enviar" onclick="enviarResposta()"><i class="fas fa-paper-plane"></i> Enviar resposta</button>
+      </div>
+    </div>
+
+    <!-- CONHEÇA ALGUÉM -->
+    <div class="indicacao-box">
+      <h5><i class="fas fa-user-plus"></i> Você conhece alguém que também poderia nos ajudar com essa pesquisa?</h5>
+      <p class="sub">Se sim, a gente já deixa tudo pronto pra você compartilhar.</p>
+      <div class="opts-ind">
+        <label class="opt-ind" id="ind-sim" onclick="mostrarCompartilhar()">Sim, conheço</label>
+        <label class="opt-ind" id="ind-nao" onclick="esconderCompartilhar()">Não</label>
+      </div>
+      <div class="indicacao-cta" id="indicacao-cta">
+        <div class="msg">
+          <strong>💬 Pronto!</strong><br>
+          É só clicar no botão abaixo. O WhatsApp abre com a mensagem já escrita — você escolhe pra quem enviar.
+        </div>
+        <button type="button" class="btn-compartilhar" onclick="compartilharWhatsApp()">
+          <i class="fab fa-whatsapp"></i> Compartilhar no WhatsApp
+        </button>
+      </div>
     </div>
   </div>
 
+  <!-- ENVIANDO -->
   <div class="section" data-sec="enviando" id="sec-enviando">
     <div class="enviando-box ativo">
       <div class="spinner"></div>
@@ -706,6 +904,7 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
     </div>
   </div>
 
+  <!-- ENVIADO -->
   <div class="section" data-sec="enviado" id="sec-enviado">
     <div class="final-card">
       <div class="final-icon"><i class="fas fa-check"></i></div>
@@ -718,24 +917,65 @@ textarea{resize:vertical;min-height:70px;line-height:1.5}
 
 <div class="nav-bar" id="nav-bar">
   <div class="nav-inner">
-    <div class="nav-info" id="nav-info">Seção <strong>1</strong> de <strong>7</strong></div>
+    <div class="nav-info" id="nav-info">Seção <strong>1</strong> de <strong>8</strong></div>
     <div class="nav-actions">
-      <button class="btn btn-outline" id="btn-voltar" onclick="voltarSecao()"><i class="fas fa-arrow-left"></i> Voltar</button>
-      <button class="btn-icon olho" id="btn-olho" onclick="irParaFinal()" disabled>
+      <button type="button" class="btn btn-outline" id="btn-voltar" onclick="voltarSecao()"><i class="fas fa-arrow-left"></i> Voltar</button>
+      <button type="button" class="btn-icon olho" id="btn-olho" onclick="irParaFinal()" disabled>
         <i class="fas fa-eye"></i>
         <span class="tooltip" id="tooltip-olho">Preencha tudo pra visualizar</span>
       </button>
-      <button class="btn btn-navy" id="btn-proximo" onclick="proximaSecao()">Próximo <i class="fas fa-arrow-right"></i></button>
+      <button type="button" class="btn btn-navy" id="btn-proximo" onclick="proximaSecao()">Próximo <i class="fas fa-arrow-right"></i></button>
     </div>
   </div>
 </div>
 
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i> <span id="toast-msg">Pronto!</span></div>
 
-<script>
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzJhsyxP84aKLkxukfosggjOOWdVE4gVeAzbknzHKDpydAu0T_Ww6Oe1c54knhP3_99/exec';
+<!-- TEMPLATE PARA GERAR PNG -->
+<div id="png-template">
+  <div class="png-inner">
+    <div class="png-header">
+      <img src="https://i.imgur.com/d60nEpv.png" alt="" crossorigin="anonymous">
+      <div class="txt">
+        <h1>Elite Studio Codex</h1>
+        <span>Pesquisa de Mercado · 2026</span>
+      </div>
+    </div>
+    <h2 class="png-titulo" id="png-titulo">Como a gente leu o seu negócio</h2>
+    <p class="png-sub" id="png-sub">Resumo das suas respostas</p>
+    <p class="png-data" id="png-data">—</p>
+    <div id="png-blocos"></div>
+    <div class="png-footer">
+      <div class="esq">Elite Studio Codex</div>
+      <div class="dir">pesquisa-de-mercado-elite-studio-codex.vercel.app</div>
+    </div>
+  </div>
+</div>
 
-const TOTAL_SECOES = 7;
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyN7SmURXiakmuSr5Upwts4XBvdT1SfB9bESx03Mh46GF2_muQ6R08yGwOQY4m_DYoi/exec';
+
+const LINK_PESQUISA = 'https://pesquisa-de-mercado-elite-studio-codex.vercel.app/';
+
+const MENSAGEM_WHATSAPP = `👋 Olá! 
+
+Sou *Richell Paiva*, criador da *Elite Studio Codex*.
+
+Estou desenvolvendo um sistema de pedidos para empresas — com *loja online própria*, *cardápio personalizável*, *painel administrativo*, *acompanhamento de pedidos em tempo real* e *relatórios inteligentes*. Sem comissão por venda. 🛒📊📦
+
+Antes de construir, preciso entender como o seu negócio funciona hoje.
+
+📋 É rapidinho — *menos de 1 minuto*.
+
+Suas respostas são anônimas e me ajudam muito.
+
+👇 Clica aqui e responde:
+
+${LINK_PESQUISA}
+
+Valeu pela força! 🚀`;
+
+const TOTAL_SECOES = 8;
 let secaoAtual = 1;
 const steps = [
   { n:1, label:'Identificação', icon:'fa-user' },
@@ -744,15 +984,21 @@ const steps = [
   { n:4, label:'Volume', icon:'fa-chart-line' },
   { n:5, label:'Ferramentas', icon:'fa-tools' },
   { n:6, label:'Pagamento', icon:'fa-credit-card' },
-  { n:7, label:'Interesse', icon:'fa-star' }
+  { n:7, label:'Interesse', icon:'fa-star' },
+  { n:8, label:'Contato', icon:'fa-map-marker-alt', opc:true }
 ];
 
 function renderStepDots(){
   const box = document.getElementById('step-dots');
   box.innerHTML = steps.map(s => {
-    const cls = s.n === secaoAtual ? 'ativo' : (s.n < secaoAtual ? 'ok' : '');
-    const ic = s.n < secaoAtual ? 'fa-check' : s.icon;
-    return `<span class="step-dot ${cls}"><i class="fas ${ic}"></i> ${s.label}</span>`;
+    let cls = '';
+    if(s.n === secaoAtual) cls = 'ativo';
+    else if(s.n < secaoAtual) cls = 'ok';
+    if(s.opc && cls !== 'ativo') cls = 'opc';
+    if(s.opc && s.n === secaoAtual) cls = 'ativo';
+    const ic = (s.n < secaoAtual) ? 'fa-check' : s.icon;
+    const suf = s.opc ? ' <span style="font-weight:600;opacity:.85">(opc)</span>' : '';
+    return `<span class="step-dot ${cls}"><i class="fas ${ic}"></i> ${s.label}${suf}</span>`;
   }).join('');
 }
 function renderProgresso(){
@@ -821,7 +1067,7 @@ function tudoPreenchido(){
   const secs = document.querySelectorAll('.section[data-sec]');
   for(const sec of secs){
     const secNum = sec.getAttribute('data-sec');
-    if(secNum === 'final' || secNum === 'enviando' || secNum === 'enviado') continue;
+    if(secNum === 'final' || secNum === 'enviando' || secNum === 'enviado' || secNum === '8') continue;
     const requireds = sec.querySelectorAll('[required]');
     const nomesChecados = new Set();
     for(const el of requireds){
@@ -893,46 +1139,111 @@ document.addEventListener('input', atualizarBotoesFixos);
 function coletarDados(){
   const fd = new FormData(document.getElementById('form-pesquisa'));
   const dados = {};
-  const cb = {};
   for(const [k, v] of fd.entries()){
-    if(cb[k]){ cb[k].push(v); }
-    else if(dados[k] !== undefined){ cb[k] = [dados[k], v]; dados[k] = cb[k]; }
-    else { dados[k] = v; }
+    if(dados[k] !== undefined){
+      if(!Array.isArray(dados[k])) dados[k] = [dados[k]];
+      dados[k].push(v);
+    } else {
+      dados[k] = v;
+    }
   }
-  document.querySelectorAll('input[type=checkbox]:checked').forEach(el => {
-    if(!Array.isArray(dados[el.name])) dados[el.name] = [dados[el.name]].filter(Boolean);
-  });
-  for(let i = 1; i <= 23; i++){
+  for(let i = 1; i <= 30; i++){
     const k = 'q' + i;
     if(dados[k] === undefined) dados[k] = '';
     if(Array.isArray(dados[k])) dados[k] = dados[k].join(', ');
   }
   return dados;
 }
-function labelPergunta(id){
-  const map = {
-    q1:'Nome do estabelecimento', q2:'Tipo', q3:'Tempo de operação',
-    q4:'Pedidos/dia', q5:'Ticket médio', q6:'Canais usados', q7:'Canal principal', q8:'Quem atende',
-    q9:'Maior dificuldade', q10:'Já perdeu pedido', q11:'Tempo de confirmação',
-    q12:'Faturamento mensal', q13:'% delivery',
-    q14:'Usa iFood', q15:'Comissão iFood', q16:'Usa cardápio digital', q17:'Sistema e valor',
-    q18:'Meios de pagamento aceitos',
-    q19:'Interesse link próprio', q20:'Interesse painel', q21:'Quanto pagaria',
-    q22:'O que precisaria ter', q23:'Pode indicar outro'
-  };
-  return map[id] || id;
+
+function gerarNarrativa(d){
+  const blocos = [];
+  const nome = d.q1 ? `<strong>${escapeHtml(d.q1)}</strong>` : 'Seu negócio';
+  const tipos = d.q2 || 'estabelecimento';
+  const tempo = d.q3 ? `há ${d.q3.toLowerCase()}` : '';
+
+  let p1 = `A gente entendeu que ${nome} é um(a) <strong>${escapeHtml(tipos)}</strong>`;
+  if(tempo) p1 += ` que opera ${tempo}`;
+  p1 += `.`;
+  if(d.q13) p1 += ` Cerca de <strong>${d.q13}</strong> do faturamento vem do delivery.`;
+  blocos.push({ ic:'fa-store', titulo:'Sobre o seu negócio', html:p1 });
+
+  let p2 = '';
+  if(d.q4 || d.q5){
+    p2 += `Você atende em média `;
+    if(d.q4) p2 += `<strong>${escapeHtml(d.q4.toLowerCase())} pedidos por dia</strong>`;
+    if(d.q4 && d.q5) p2 += `, com ticket médio de `;
+    if(d.q5) p2 += `<strong>${escapeHtml(d.q5)}</strong>`;
+    p2 += `. `;
+  }
+  if(d.q6) p2 += `Usa hoje os canais: <strong>${escapeHtml(d.q6)}</strong>. `;
+  if(d.q7) p2 += `O principal é o <strong>${escapeHtml(d.q7)}</strong>. `;
+  if(d.q8) p2 += `Quem atende é <strong>${escapeHtml(d.q8)}</strong>.`;
+  if(p2) blocos.push({ ic:'fa-cog', titulo:'Sobre a sua operação', html:p2 });
+
+  let p3 = '';
+  if(d.q9) p3 += `Sua maior dificuldade hoje: <strong>${escapeHtml(d.q9)}</strong>. `;
+  if(d.q10) p3 += `Sobre perder pedido por demora na resposta: <strong>${escapeHtml(d.q10.toLowerCase())}</strong>. `;
+  if(d.q11) p3 += `O tempo médio para confirmar um pedido é <strong>${escapeHtml(d.q11)}</strong>.`;
+  if(p3) blocos.push({ ic:'fa-heart-broken', titulo:'Onde aperta', html:p3 });
+
+  let p4 = '';
+  if(d.q14){
+    p4 += `Hoje você ${d.q14.toLowerCase() === 'sim' ? '<strong>usa iFood</strong>' : '<strong>não usa iFood</strong>'}`;
+    if(d.q15 && d.q14.toLowerCase() === 'sim') p4 += ` e paga <strong>${escapeHtml(d.q15)}</strong> de comissão`;
+    p4 += `. `;
+  }
+  if(d.q16){
+    p4 += `${d.q16.toLowerCase() === 'sim' ? '<strong>Usa</strong> cardápio digital ou sistema' : '<strong>Não usa</strong> cardápio digital ou sistema'}`;
+    if(d.q17) p4 += ` — <strong>${escapeHtml(d.q17)}</strong>`;
+    p4 += `. `;
+  }
+  if(d.q18) p4 += `Aceita os meios de pagamento: <strong>${escapeHtml(d.q18)}</strong>.`;
+  if(p4) blocos.push({ ic:'fa-credit-card', titulo:'Ferramentas e pagamento', html:p4 });
+
+  let p5 = '';
+  if(d.q19) p5 += `Seu interesse em ter um <strong>link próprio</strong> para receber pedidos: <strong>${d.q19}/5</strong>. `;
+  if(d.q20) p5 += `Seu interesse em ter um <strong>painel com relatórios</strong>: <strong>${d.q20}/5</strong>. `;
+  if(d.q21) p5 += `Quanto pagaria por mês: <strong>${escapeHtml(d.q21)}</strong>. `;
+  if(d.q22) p5 += `Pra valer esse valor, você disse que precisa ter: <strong>${escapeHtml(d.q22)}</strong>.`;
+  if(p5) blocos.push({ ic:'fa-star', titulo:'Sobre a solução nova', html:p5 });
+
+  let p6 = '';
+  if(d.q24) p6 += `Hoje você administra o negócio <strong>${escapeHtml(d.q24.toLowerCase())}</strong>. `;
+  if(d.q25) p6 += `Sua preferência para a nova solução: <strong>${escapeHtml(d.q25.toLowerCase())}</strong>.`;
+  if(p6) blocos.push({ ic:'fa-laptop', titulo:'Como você trabalha', html:p6 });
+
+  const temContato = d.q26 || d.q27 || d.q28 || d.q29 || d.q30;
+  if(temContato){
+    let p7 = '';
+    if(d.q26 || d.q27){
+      p7 += `Você é de <strong>${escapeHtml(d.q26 || '—')}${d.q27 ? ' (' + escapeHtml(d.q27) + ')' : ''}</strong>. `;
+    }
+    if(d.q28) p7 += `Endereço: <strong>${escapeHtml(d.q28)}</strong>. `;
+    if(d.q29) p7 += `WhatsApp/Telefone: <strong>${escapeHtml(d.q29)}</strong>. `;
+    if(d.q30) p7 += `E-mail: <strong>${escapeHtml(d.q30)}</strong>.`;
+    blocos.push({ ic:'fa-map-marker-alt', titulo:'Contato e localização', html:p7, gold:true });
+  }
+
+  return blocos;
 }
+
 function renderResumo(){
   const d = coletarDados();
+  const blocos = gerarNarrativa(d);
   const box = document.getElementById('resumo-content');
-  const linhas = [];
-  for(let i = 1; i <= 23; i++){
-    const k = 'q' + i;
-    if(d[k] !== undefined && d[k] !== ''){
-      linhas.push(`<div class="resumo-linha"><span class="q">${labelPergunta(k)}</span><span class="a">${escapeHtml(d[k])}</span></div>`);
-    }
+  if(!blocos.length){
+    box.innerHTML = '<p style="font-size:.86rem;color:#64748b">Sem respostas para resumir.</p>';
+    return;
   }
-  box.innerHTML = linhas.join('') || '<div class="resumo-linha"><span class="q">Sem respostas registradas.</span></div>';
+  box.innerHTML = blocos.map(b => `
+    <div class="bloco-resumo">
+      <div class="bloco-ic ${b.gold ? 'gold' : ''}"><i class="fas ${b.ic}"></i></div>
+      <div class="bloco-txt">
+        <h5>${b.titulo}</h5>
+        <p>${b.html}</p>
+      </div>
+    </div>
+  `).join('');
 }
 
 function irParaFinal(){
@@ -952,6 +1263,69 @@ function finalizar(pular){
   document.querySelectorAll('.step-dot').forEach(el => { el.classList.remove('ativo'); el.classList.add('ok'); });
   renderResumo();
   window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function mostrarCompartilhar(){
+  document.getElementById('ind-sim').classList.add('ativo');
+  document.getElementById('ind-nao').classList.remove('ativo');
+  document.getElementById('indicacao-cta').classList.add('ativo');
+}
+function esconderCompartilhar(){
+  document.getElementById('ind-nao').classList.add('ativo');
+  document.getElementById('ind-sim').classList.remove('ativo');
+  document.getElementById('indicacao-cta').classList.remove('ativo');
+}
+function compartilharWhatsApp(){
+  const url = 'https://wa.me/?text=' + encodeURIComponent(MENSAGEM_WHATSAPP);
+  window.open(url, '_blank');
+}
+
+async function baixarRespostas(){
+  const d = coletarDados();
+  const blocos = gerarNarrativa(d);
+  if(!blocos.length){ toast('Sem respostas para baixar', 'erro'); return; }
+
+  toast('Gerando imagem...', 'ok');
+
+  const hoje = new Date();
+  const dataFmt = hoje.toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  document.getElementById('png-data').textContent = 'Gerado em ' + dataFmt;
+
+  const nomeEmp = d.q1 ? d.q1 : 'Sua empresa';
+  document.getElementById('png-sub').textContent = 'Resumo das respostas de ' + nomeEmp;
+
+  document.getElementById('png-blocos').innerHTML = blocos.map(b => `
+    <div class="png-bloco">
+      <div class="png-bloco-ic ${b.gold ? 'gold' : ''}"><i class="fas ${b.ic}"></i></div>
+      <div class="png-bloco-txt">
+        <h5>${b.titulo}</h5>
+        <p>${b.html}</p>
+      </div>
+    </div>
+  `).join('');
+
+  const alvo = document.getElementById('png-template');
+  try {
+    const canvas = await html2canvas(alvo, {
+      scale: 2,
+      backgroundColor: '#ffffff',
+      useCORS: true,
+      logging: false,
+      windowWidth: 900
+    });
+    const url = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    const nomeBase = (d.q1 || 'pesquisa').toString().replace(/[^\w\-]+/g,'_').slice(0,30);
+    a.href = url;
+    a.download = `Elite_Studio_Codex_Pesquisa_${nomeBase}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast('Imagem baixada!', 'ok');
+  } catch(err){
+    console.error(err);
+    toast('Erro ao gerar imagem', 'erro');
+  }
 }
 
 async function enviarResposta(){

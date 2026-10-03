@@ -680,28 +680,36 @@ input:disabled,textarea:disabled{background:rgba(241,245,249,.9);color:#94a3b8;c
 
   </form>
 
+  <!-- TELA DE ENVIO (spinner) -->
+  <div class="section" data-sec="enviando" id="sec-enviando">
+    <div class="enviando-box ativo"><div class="spinner"></div><h3>Enviando respostas...</h3><p>Aguarde um instante.</p></div>
+  </div>
+
+  <!-- TELA FINAL (após envio automático) -->
   <div class="section" data-sec="final" id="sec-final">
     <div class="final-topo">
       <div class="ic"><i class="fas fa-check"></i></div>
       <div class="txt">
-        <h3 id="final-titulo">Pesquisa concluída</h3>
+        <h3 id="final-titulo">Respostas enviadas!</h3>
         <p id="final-sub">Sua análise está pronta. Baixe abaixo.</p>
       </div>
     </div>
+
+    <!-- AÇÕES — TUDO EM CIMA -->
     <div class="acao-destaque">
       <h4>🎁 Preparamos uma análise completa do seu negócio</h4>
-      <p>Gráficos, números e leitura personalizada — no formato A4, pronta pra imprimir ou guardar.</p>
+      <p>Gráficos, números e leitura personalizada — no formato A4, pronta pra imprimir ou guardar no celular.</p>
       <button type="button" class="btn-download-hero" onclick="baixarRespostas()"><i class="fas fa-download"></i> Baixar análise do meu negócio</button>
     </div>
-    <div class="acoes-secundarias" id="acoes-primeira-vez">
-      <button type="button" class="btn btn-success" id="btn-enviar" onclick="enviarResposta()"><i class="fas fa-paper-plane"></i> Enviar resposta</button>
-    </div>
-    <div class="acoes-secundarias" id="acoes-ja-enviado" style="display:none">
+
+    <div class="acoes-secundarias" style="margin-top:12px">
       <button type="button" class="btn btn-outline" onclick="refazerPesquisa()"><i class="fas fa-redo"></i> Refazer pesquisa</button>
     </div>
+
     <div class="esperanca">
       <p><i class="fas fa-handshake"></i> <strong>A Elite Studio Codex nasceu para organizar negócios.</strong> Esperamos ser parceiros do seu empreendimento em breve.</p>
     </div>
+
     <div class="indicacao-box">
       <h5><i class="fas fa-user-plus"></i> Você conhece alguém que também poderia nos ajudar com essa pesquisa?</h5>
       <p class="sub">Se sim, a gente já deixa tudo pronto pra você compartilhar.</p>
@@ -753,25 +761,6 @@ input:disabled,textarea:disabled{background:rgba(241,245,249,.9);color:#94a3b8;c
         <div class="dash-section-titulo"><i class="fas fa-stethoscope"></i> Leitura do perfil</div>
         <div class="bullets" id="dash-bullets"></div>
       </div>
-    </div>
-  </div>
-
-  <div class="section" data-sec="enviando" id="sec-enviando">
-    <div class="enviando-box ativo"><div class="spinner"></div><h3>Enviando respostas...</h3><p>Aguarde um instante.</p></div>
-  </div>
-
-  <div class="section" data-sec="enviado" id="sec-enviado">
-    <div class="final-topo" style="flex-direction:column;text-align:center;padding:26px 20px">
-      <div class="ic" style="width:56px;height:56px;font-size:1.5rem;margin-bottom:6px"><i class="fas fa-check"></i></div>
-      <div class="txt"><h3 style="font-size:1.05rem;margin-bottom:4px">Respostas registradas!</h3><p style="font-size:.78rem">Obrigado por participar. Sua análise está disponível abaixo.</p></div>
-    </div>
-    <div class="acao-destaque" style="margin-top:16px">
-      <h4>🎁 Sua análise está pronta</h4>
-      <p>Baixe agora o diagnóstico A4 que preparamos sobre o seu negócio.</p>
-      <button type="button" class="btn-download-hero" onclick="baixarRespostas()"><i class="fas fa-download"></i> Baixar análise do meu negócio</button>
-    </div>
-    <div class="acoes-secundarias" style="margin-top:14px">
-      <button type="button" class="btn btn-outline" onclick="verDiagnosticoSalvo()"><i class="fas fa-eye"></i> Ver diagnóstico nesta tela</button>
     </div>
   </div>
 
@@ -859,21 +848,24 @@ const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEOUgOdx7roKdC
 const LINK_PESQUISA = 'https://pesquisa-de-mercado-elite-studio-codex.vercel.app/';
 const STORAGE_KEY = 'esc_pesquisa_respostas_v1';
 
-const MENSAGEM_WHATSAPP = `👋 Olá! 
+const MENSAGEM_WHATSAPP = `👋 Olá!
 
-Sou *Richell Paiva*, criador da *Elite Studio Codex*.
+Sou *Richell Paiva*, da *Elite Studio Codex*.
 
-Estou desenvolvendo um sistema de pedidos para empresas — com *loja online própria*, *cardápio personalizável*, *painel administrativo*, *acompanhamento de pedidos em tempo real* e *relatórios inteligentes*. Sem comissão por venda. 🛒📊📦
+Estou desenvolvendo um sistema de pedidos para alguns empreendimentos — com *loja online própria*, *cardápio personalizável*, *painel administrativo*, *acompanhamento de pedidos em tempo real* e *relatórios inteligentes*. Sem comissão por venda. 🛒📊📦
 
-Antes de construir, preciso entender como o seu negócio funciona hoje.
+Enquanto estou construindo, preciso entender como o seu negócio funciona hoje.
 
-📋 É rapidinho — *menos de 1 minuto*.
+🎁 No fim, você recebe uma *análise do seu negócio*, com:
 
-🎁 No fim, você recebe uma *análise personalizada do seu negócio* — com números e gráficos baseados nas suas respostas.
+📊 Faturamento mensal e anual estimado
+💰 Quanto você deixa em comissão (se usar iFood)
+⏱️ Quanto perde por dia em pedido que demora pra confirmar
+📈 Gráficos e leitura do seu perfil
 
-Suas respostas são anônimas e me ajudam muito.
+Tudo baseado nas suas respostas. Pronto pra imprimir ou baixar no celular.
 
-👇 Clica aqui e responde:
+👇 Clica no link e responde:
 
 ${LINK_PESQUISA}
 
@@ -1047,7 +1039,7 @@ function mostrarSecao(n){
 function proximaSecao(){
   if(!validarSecao(secaoAtual)) return;
   if(secaoAtual < TOTAL_SECOES){ mostrarSecao(secaoAtual + 1); }
-  else { finalizar(); }
+  else { dispararEnvio(); }
 }
 function voltarSecao(){ if(secaoAtual > 1) mostrarSecao(secaoAtual - 1); }
 
@@ -1106,7 +1098,7 @@ function atualizarBotoesFixos(){
   const bOlho = document.getElementById('btn-olho');
   const tOlho = document.getElementById('tooltip-olho');
   bOlho.disabled = !ok;
-  if(ok){ bOlho.classList.add('ativo-pulse'); tOlho.textContent = 'Visualizar respostas'; }
+  if(ok){ bOlho.classList.add('ativo-pulse'); tOlho.textContent = 'Ver análise e enviar'; }
   else { bOlho.classList.remove('ativo-pulse'); tOlho.textContent = 'Preencha tudo pra visualizar'; }
 }
 
@@ -1194,7 +1186,6 @@ function calcularAnalise(d){
   const comissaoMes = usaIFood && pctComissao > 0 ? (faturamentoMes * pctComissao / 100) : 0;
   const comissaoAno = comissaoMes * 12;
 
-  // Perda baseada no q31 (o que o cliente declarou)
   const pedidosPerdidosMes = pedidosPerdidosDia * 30;
   const valorPerdidoMes = pedidosPerdidosMes * ticket;
   const pctPerdido = faturamentoMes > 0 ? (valorPerdidoMes / faturamentoMes) * 100 : 0;
@@ -1225,7 +1216,6 @@ function gerarBullets(d, a){
   else if(a.pctDelivery >= 40) b.push({ ic:'fa-motorcycle', cls:'', html:`<strong>${a.pctDelivery}% do faturamento vem do delivery.</strong> Parte relevante poderia rodar em canal próprio.` });
   else b.push({ ic:'fa-utensils', cls:'', html:`<strong>Seu delivery é uma parte menor do faturamento (${a.pctDelivery}%).</strong> Existe espaço pra crescer sem depender de plataformas.` });
 
-  // Bullet baseado na perda declarada (q31)
   if(a.pedidosPerdidosDia > 0){
     b.push({ ic:'fa-fire', cls:'alerta', html:`<strong>Você estimou perder ${escapeHtml(d.q31)} pedido(s) por dia por demora.</strong> Isso representa cerca de ${fmtBRL(a.valorPerdidoMes)} por mês.` });
   } else {
@@ -1490,21 +1480,30 @@ async function baixarRespostas(){
 
 function irParaFinal(){
   if(!tudoPreenchido()){ toast('Faltam respostas obrigatórias', 'erro'); return; }
-  finalizar(true);
+  if(modoJaEnviado){ mostrarSecaoFinal(); return; }
+  dispararEnvio();
 }
-function finalizar(pular){
-  if(!pular && !validarSecao(secaoAtual)) return;
+
+function dispararEnvio(){
   if(!tudoPreenchido()){ toast('Faltam respostas obrigatórias', 'erro'); return; }
+  if(modoJaEnviado){ mostrarSecaoFinal(); return; }
+  enviarResposta();
+}
+
+function mostrarSecaoFinal(){
   document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
   document.getElementById('sec-final').classList.add('ativo');
   document.getElementById('nav-bar').classList.add('escondida');
+  document.getElementById('progress-card').style.display = 'none';
   document.getElementById('progress-fill').style.width = '100%';
   document.getElementById('progress-pct').textContent = '100%';
   document.getElementById('progress-lbl').textContent = 'Concluído';
   document.querySelectorAll('.step-dot').forEach(el => { el.classList.remove('ativo'); el.classList.add('ok'); });
-  renderDashboard(coletarDados());
+  const d = carregarRespostas()?.dados || coletarDados();
+  renderDashboard(d);
   window.scrollTo({ top:0, behavior:'smooth' });
 }
+
 function mostrarCompartilhar(){
   document.getElementById('ind-sim').classList.add('ativo');
   document.getElementById('ind-nao').classList.remove('ativo');
@@ -1520,13 +1519,14 @@ function compartilharWhatsApp(){
 }
 
 async function enviarResposta(){
-  const btn = document.getElementById('btn-enviar');
-  if(btn){ btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...'; }
   document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
   document.getElementById('sec-enviando').classList.add('ativo');
+  document.getElementById('nav-bar').classList.add('escondida');
   window.scrollTo({ top:0, behavior:'smooth' });
+
   const payload = coletarDados();
   salvarRespostas(payload);
+
   try {
     await fetch(APPS_SCRIPT_URL, {
       method: 'POST', mode: 'no-cors',
@@ -1535,15 +1535,13 @@ async function enviarResposta(){
     });
     await new Promise(r => setTimeout(r, 900));
     modoJaEnviado = true;
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
-    document.getElementById('sec-enviado').classList.add('ativo');
-    window.scrollTo({ top:0, behavior:'smooth' });
+    mostrarSecaoFinal();
   } catch(err) {
     console.error(err);
-    toast('Erro ao enviar. Tente novamente.', 'erro');
-    document.getElementById('sec-enviando').classList.remove('ativo');
-    document.getElementById('sec-final').classList.add('ativo');
-    if(btn){ btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar resposta'; }
+    toast('Erro ao enviar. Mas sua análise está pronta.', 'erro');
+    await new Promise(r => setTimeout(r, 1200));
+    modoJaEnviado = true;
+    mostrarSecaoFinal();
   }
 }
 
@@ -1552,19 +1550,7 @@ function verDiagnosticoSalvo(){
   if(!salvo){ toast('Nada encontrado', 'erro'); return; }
   modoJaEnviado = true;
   preencherFormularioComDados(salvo.dados);
-  document.getElementById('final-titulo').textContent = 'Sua análise está pronta';
-  document.getElementById('final-sub').textContent = 'Você já respondeu. Baixe a análise abaixo.';
-  document.getElementById('acoes-primeira-vez').style.display = 'none';
-  document.getElementById('acoes-ja-enviado').style.display = 'flex';
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
-  document.getElementById('sec-final').classList.add('ativo');
-  document.getElementById('nav-bar').classList.add('escondida');
-  document.getElementById('progress-card').style.display = 'none';
-  document.getElementById('progress-fill').style.width = '100%';
-  document.getElementById('progress-pct').textContent = '100%';
-  document.getElementById('progress-lbl').textContent = 'Concluído';
-  renderDashboard(salvo.dados);
-  window.scrollTo({ top:0, behavior:'smooth' });
+  mostrarSecaoFinal();
 }
 
 function refazerPesquisa(){
@@ -1594,18 +1580,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if(salvo){
     modoJaEnviado = true;
     preencherFormularioComDados(salvo.dados);
-    document.getElementById('final-titulo').textContent = 'Sua análise está pronta';
-    document.getElementById('final-sub').textContent = 'Você já respondeu. Baixe a análise abaixo.';
-    document.getElementById('acoes-primeira-vez').style.display = 'none';
-    document.getElementById('acoes-ja-enviado').style.display = 'flex';
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('ativo'));
-    document.getElementById('sec-final').classList.add('ativo');
-    document.getElementById('nav-bar').classList.add('escondida');
-    document.getElementById('progress-card').style.display = 'none';
-    document.getElementById('progress-fill').style.width = '100%';
-    document.getElementById('progress-pct').textContent = '100%';
-    document.getElementById('progress-lbl').textContent = 'Concluído';
-    renderDashboard(salvo.dados);
+    mostrarSecaoFinal();
     return;
   }
   renderStepDots();
